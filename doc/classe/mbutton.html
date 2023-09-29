@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="../style.css">
+        <meta charset="utf-8">
+        <title>MLib - MButton</title>
+    </head>
+    <body>
+        <h1>MButton</h1>
+        <div>
+            MButton est une classe secondaire pour définir un bouton de base (plus facilement qu'avec <a href="./mwidget.html">MWidget</a> seul).</br>
+            Ce bouton représente un bouton de base, comme on peut se l'imaginer, sous windows (avec quelques modularité possibles).</br>
+            Elle hérite de <a href="mtext.html">MText</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="display">Affichage</h3>
+        <div>
+            Ce bouton reprend l'apparence d'un bouton basique de windows. Il comprend une petite <a href="./mframe.html#setFrameWidth">bordure</a> <a href="./mframe.html#setFrameColor">noire</a>.
+            Sa couleur <a href="./mwidget.html#setBackgroundColor">d'arrière plan</a> est grise et son <a href="./mtext.html#setTextColor">texte</a> noir.
+            Le texte du bouton est afficher avec une <a href="./mtext.html#setFontSize">police</a> de taille 22
+            Au survol, le <a href="./mwidget.html#setCursor">curseur</a> devient le curseur de la main pygame (pygame.SYSTEM_HAND_CURSOR).
+            En plus de ça, plusieurs actions sont possibles au survol :</br>
+            -Changer la <a href="#changeBackgroundColorOnOnOverflight">couleur</a> d'arrière plan du bouton.</br>
+            -Changer la <a href="#changeFontSizeOnOnOverflight">couleur</a> du texte du bouton.</br>
+            -Changer la <a href="#changeTextColorOnOnOverflight">taille</a> du texte du bouton.</br>
+            Toutes ces options sont très modulables.
+        </div>
+
+        <h2>Fonctions</h2>
+        <h3 id = "__init__">__init__()</h3>
+        <div>
+            Paramètres : x (assignée à la variabe <a href="./mwidget.html#x">x</a> de MWidget), y (assignée à la variabe <a href="./mwidget.html#y">y</a> de MWidget), width (assignée à la variable <a href="./mwidget.html#width">width</a> de MWidget), height (assignée à la variable <a href="./mwidget.html#height">height</a> de MWidget), parent (assignée à la variable <a href="./mwidget.html#parent">parent</a> de MWidget), widgetType (assignée à la variable <a href="./mwidget.html#_type">_type</a> de MWidget, basiquememnt mit à "MButton")</br>
+            Construit un objet MButton.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getBackgroundColorOnOverflight">getBackgroundColorOnOverflight()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#backgroundColorOnOverflight">couleur</a> d'arrière plan au survol du widget par le curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getChangeBackgroundColorOnOnOverflight">getChangeBackgroundColorOnOnOverflight()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#changeBackgroundColorOnOnOverflight">booléen</a> qui indique si la couleur d'arrière plan change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getChangeTextColorOnOnOverflight">getChangeTextColorOnOnOverflight()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#changeTextColorOnOnOverflight">booléen</a> qui indique si la couleur du texte change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getChangeFontSizeOnOnOverflight">getChangeFontSizeOnOnOverflight()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#changeFontSizeOnOnOverflightt">booléen</a> qui indique si la taille du texte change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getTextColorOnOverflight">getTextColorOnOverflight()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#textColorOnOverflight">couleur</a> du texte lors du survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="isGettingLeftClicked">isGettingLeftClicked()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne si la touche gauche de la souris est <a href="#leftClicked">clické</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="isGettingRightClicked">isGettingRightClicked()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne si la touche droite de la souris est <a href="#rightClicked">clické</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setBackgroundColor">setBackgroundColor()</h3>
+        <div>
+            Paramètres : backgroundColor (nouvelle couleur d'arrière plan), notButton (booléen qui indique si l'appel vient du MButton ou pas, basiquement à True)</br>
+            Modifie la couleur d'arrière plan du MButton.</br>
+            Si notButton est vrai, alors <a href="#_baseBackgroundColor">_baseBackgroundColor</a> et <a href="./mwidget.html#backgroundColor">backgroundColor</a> sont modifiés.</br>
+            Sinon, juste <a href="./mwidget.html#backgroundColor">backgroundColor</a> est modifié.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setBackgroundColorOnOverflight">setBackgroundColorOnOverflight()</h3>
+        <div>
+            Paramètres : backgroundColorOnOverflight (nouvelle <a href="#backgroundColorOnOverflight">couleur</a> d'arrière plan au survol du widget par le curseur)</br>
+            Change la <a href="#backgroundColorOnOverflight">couleur</a> d'arrière plan au survol du widget par le curseur par "backgroundColorOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setChangeBackgroundColorOnOnOverflight">setChangeBackgroundColorOnOnOverflight()</h3>
+        <div>
+            Paramètres : changeBackgroundColorOnOnOverflight (nouvelle valeur du <a href="#changeBackgroundColorOnOnOverflight">booléen</a> qui indique si la couleur d'arrière plan change au survol du curseur)</br>
+            Change le <a href="#changeBackgroundColorOnOnOverflight">booléen</a> qui indique si la couleur d'arrière plan change au survol du curseur par "changeBackgroundColorOnOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setChangeFontSizeOnOnOverflight">setChangeFontSizeOnOnOverflight()</h3>
+        <div>
+            Paramètres : changeFontSizeOnOnOverflight (nouvelle valeur du <a href="#changeFontSizeOnOnOverflight">booléen</a> qui indique si la taille du texte change au survol du curseur)</br>
+            Change le <a href="#changeFontSizeOnOnOverflight">booléen</a> qui indique si la taille du texte change au survol du curseur par "changeFontSizeOnOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setChangeTextColorOnOnOverflight">setChangeTextColorOnOnOverflight()</h3>
+        <div>
+            Paramètres : changeTextColorOnOnOverflight (nouvelle valeur du <a href="#changeTextColorOnOnOverflight">booléen</a> qui indique si la couleur du texte change au survol du curseur)</br>
+            Change le <a href="#changeTextColorOnOnOverflight">booléen</a> qui indique si la couleur du texte change au survol du curseur par "changeTextColorOnOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setFontSize">setFontSize()</h3>
+        <div>
+            Paramètres : fontSize (nouvelle taille du texte), notButton (booléen qui indique si l'appel vient du MButton ou pas, basiquement à True)</br>
+            Modifie la taille du texte du MButton.</br>
+            Si notButton est vrai, alors <a href="#_baseFontSize">_baseFontSize</a> et <a href="./mtext.html#fontSize">fontSize</a> sont modifiés.</br>
+            Sinon, juste <a href="./mtext.html#fontSize">fontSize</a> est modifié.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setFontSizeOnOverflight">setFontSizeOnOverflight()</h3>
+        <div>
+            Paramètres : fontSizeOnOverflight (nouvelle <a href="#fontSizeOnOverflight">taille</a> du texte au survol du widget par le curseur)</br>
+            Change la <a href="#fontSizeOnOverflight">couleur</a> du texte au survol du widget par le curseur par "fontSizeOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setTextColor">setTextColor()</h3>
+        <div>
+            Paramètres : textColor (nouvelle couleur du texte), notButton (booléen qui indique si l'appel vient du MButton ou pas, basiquement à True)</br>
+            Modifie la couleur du texte du MButton.</br>
+            Si notButton est vrai, alors <a href="#_baseTextColor">_baseTextColor</a> et <a href="./mtext.html#textColor">textColor</a> sont modifiés.</br>
+            Sinon, juste <a href="./mtext.html#textColor">textColor</a> est modifié.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setTextColorOnOverflight">setTextColorOnOverflight()</h3>
+        <div>
+            Paramètres : textColorOnOverflight (nouvelle <a href="#textColorOnOverflight">couleur</a> d'arrière plan au survol du widget par le curseur)</br>
+            Change la <a href="#textColorOnOverflight">couleur</a> d'arrière plan au survol du widget par le curseur par "textColorOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_doNotOverflightedEffect">_doNotOverflightedEffect()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Effectue sur le MButton les actions nécessaires lorsque le MButton est normal (non survolé).</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_doOverflightedEffect">_doOverflightedEffect()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Effectue sur le MButton les actions nécessaires lorsque le MButton est survolé.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isGettingMouseDown">_isGettingMouseDown()</h3>
+        <div>
+            Paramètres : button (nombre entier du bouton de souris clické), relativePos (position relative au widget du curseur de la souris)</br>
+            Fonction appelé lorsque le widget est clické.</br>
+            Si button est "1", la touche clické est la touche gauche, si button est "2", la touche clické est la molette, si button est "3", la touche clické est la touche droite.</br>
+            Met à jour <a href="#leftClicked">leftClicked</a> et <a href="#rightClicked">rightClicked</a>.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isGettingMouseDown">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isGettingMouseUp">_isGettingMouseUp()</h3>
+        <div>
+            Paramètres : button (nombre entier du bouton de souris clické), relativePos (position relative au widget du curseur de la souris)</br>
+            Fonction appelé lorsque le widget n'est plus clické.</br>
+            Si button est "1", la touche clické est la touche gauche, si button est "2", la touche clické est la molette, si button est "3", la touche clické est la touche droite.</br>
+            Met à jour <a href="#leftClicked">leftClicked</a> et <a href="#rightClicked">rightClicked</a>.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isGettingMouseUp">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isGettingOverflighted">_isGettingOverflighted()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Fonction appelé lorsque le widget est survolé.</br>
+            Permet d'appeler <a href="#_doOverflightedEffect">_doOverflightedEffect</a> lors du survol du curseur.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isGettingOverflighted">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isNotFocusedAnymore">_isNotFocusedAnymore()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Fonction appelé lorsque le widget n'est plus focus.</br>
+            Permet de savoir quand le widget n'est plus focus pour reset <a href="#leftClicked">leftClicked</a> et <a href="#rightClicked">rightClicked</a>.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isNotFocusedAnymore">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isNotOverflightedAnymore">_isNotOverflightedAnymore()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Fonction appelé lorsque le widget n'est plus survolé par le curseur.</br>
+            Permet de savoir quand le widget n'est plus survolé pour appeler <a href="#_doNotOverflightedEffect">_doNotOverflightedEffect</a>.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isNotOverfligthedAnymore">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+
+        <h2>Variables</h2>
+        <h3 id="backgroundColorOnOverflight">backgroundColorOnOverflight</h3>
+        <div>
+            Couleur d'arrière plan du MButton quand il est survolé par le curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="changeBackgroundColorOnOnOverflight">changeBackgroundColorOnOnOverflight</h3>
+        <div>
+            Booléen qui indique si la couleur d'arrière plan change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="changeFontSizeOnOnOverflight">changeFontSizeOnOnOverflight</h3>
+        <div>
+            Booléen qui indique si la taille du texte change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="changeTextColorOnOnOverflight">changeTextColorOnOnOverflight</h3>
+        <div>
+            Booléen qui indique si la couleur du texte change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="leftClicked">leftClicked</h3>
+        <div>
+            Booléen qui indique si la touche gauche de la souris est clické (toutes les frames entre <a href="#_isGettingMouseDown">_isGettingMouseDown()</a>) et (toutes les frames entre <a href="#_isGettingMouseUp">_isGettingMouseUp()</a>).</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="rightClicked">rightClicked</h3>
+        <div>
+            Booléen qui indique si la touche droite de la souris est clické (toutes les frames entre <a href="#_isGettingMouseDown">_isGettingMouseDown()</a>) et (toutes les frames entre <a href="#_isGettingMouseUp">_isGettingMouseUp()</a>).</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="fontSizeOnOverflight">fontSizeOnOverflight</h3>
+        <div>
+            Taille du texte du MButton quand il est survolé par le curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="textColorOnOverflight">textColorOnOverflight</h3>
+        <div>
+            Couleur du texte du MButton quand il est survolé par le curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_baseBackgroundColor">_baseBackgroundColor</h3>
+        <div>
+            Couleur d'arrière plan du texte initiale, en étant modifiable que par <a href="#setBackgroundColor">setBackgroundColor</a>.</br>
+            En effet, <a href="./mwidget.html#backgroundColor">backgroundColor</a> peut être modifié par <a href="_doOverflightedEffect">_doOverflightedEffect()</a> et la couleur initiale peut donc être perdu sans _baseBackgroundColor.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_baseFontSize">_baseFontSize</h3>
+        <div>
+            Taille du texte initiale, en étant modifiable que par <a href="#setFontSize">setFontSize</a>.</br>
+            En effet, <a href="./mtext.html#fontSize">fontSize</a> peut être modifié par <a href="_doOverflightedEffect">_doOverflightedEffect()</a> et la couleur initiale peut donc être perdu sans _baseTextSize.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_baseTextColor">_baseTextColor</h3>
+        <div>
+            Couleur du texte initiale, en étant modifiable que par <a href="#setTextColor">setTextColor</a>.</br>
+            En effet, <a href="./mtext.html#textColor">textColor</a> peut être modifié par <a href="_doOverflightedEffect">_doOverflightedEffect()</a> et la couleur initiale peut donc être perdu sans _baseTextColor.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+    </body>
+</html>

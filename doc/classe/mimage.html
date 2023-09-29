@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="../style.css">
+        <meta charset="utf-8">
+        <title>MLib - MImage</title>
+    </head>
+    <body>
+        <h1>MImage</h1>
+        <div>
+            MImage est une classe secondaire permettant de créer des objets graphiques affichant une image.</br>
+            Elle hérite de <a href="./mframe.html">MFrame</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+
+        <h2>Fonctions</h2>
+        <h3 id = "__init__">__init__()</h3>
+        <div>
+            Paramètres : imageLink (<a href="#imageLink">chemin d'accés</a> vers l'image à afficher), x (assignée à la variabe <a href="./mwidget.html#x">x</a>), y (assignée à la variabe <a href="./mwidget.html#y">y</a>), width (assignée à la variable <a href="./mwidget.html#width">width</a>), height (assignée à la variable <a href="./mwidget.html#height">height</a>), parent (assignée à la variable <a href="./mwidget.html#parent">parent</a>), widgetType (assignée à la variable <a href="_type">_type</a>, basiquememnt mit à "MFrame")</br>
+            Construit un objet MImage.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "getImageHorizontalAlignment">getImageHorizontalAlignment</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne l'<a href="#imageHorizontalAlignment">alignement</a> horizontal de l'image.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "getImageLink">getImageLink()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#imageLink">chemin d'accés</a> vers l'image à afficher.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "getImagePosition">getImagePosition()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#imagePosition">position</a> de l'image.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "getImageReframing">getImageReframing()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#imageReframing">recadrement</a> de l'image.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "getImageSize">getImageSize()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#imageSize">taille</a> de l'image défini pour le recadrement.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "getImageVerticalAlignment">getImageVerticalAlignment()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne l'<a href="#imageVerticalAlignment">alignement</a> vertical de l'image.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "setImageHorizontalAlignment">setImageHorizontalAlignment</h3>
+        <div>
+            Paramètres : imageHorizontalAlignment (nouvel <a href="#imageHorizontalAlignment">alignement</a> horizontal de l'image)</br>
+            Change l'<a href="#imageHorizontalAlignment">alignement</a> horizontal de l'image par "imageHorizontalAlignment".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "setImageLink">setImageLink()</h3>
+        <div>
+            Paramètres : imageLink (Nouveau <a href="#imageLink">chemin d'accés</a> vers l'image), editSize (booléen qui indique si la <a href="imageSize">taille</a> de l'image selon le recadrement est modifié par la taille de la nouvelle image ou non, basiquement à True)</br>
+            Change le <a href="#imageLink">chemin d'accés</a> vers l'image par "imageLink" si "imageLink" existe dans le système.</br>
+            Elle change aussi l'<a href="#_image">image</a> pygame.</br>
+            Et si "editSize" est True, elle change aussi la <a href="imageSize">taille</a> de l'image selon le recadrement par la taille de la nouvelle image.</br>
+            Modifié à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "setImagePosition">setImagePosition()</h3>
+        <div>
+            Paramètres : imagePosition (nouvelle <a href="#imagePosition">position</a> de l'image)</br>
+            Change la <a href="#imagePosition">position</a> de l'image par "imagePosition".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "setImageReframing">setImageReframing()</h3>
+        <div>
+            Paramètres : imageReframing (nouveau <a href="#imageReframing">recadrement</a> de l'image)</br>
+            Change le <a href="#imageReframing">recadrement</a> de l'image à "imageReframing".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "setImageSize">setImageSize()</h3>
+        <div>
+            Paramètres : imageSize (nouvelle <a href="#imageSize">taille</a> de l'image défini pour le recadrement)</br>
+            Change la <a href="#imageSize">taille</a> de l'image défini pour le recadrement à "imageSize".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "setImageVerticalAlignment">setImageVerticalAlignment()</h3>
+        <div>
+            Paramètres : imageVerticalAlignment (nouvel <a href="#imageVerticalAlignment">alignement</a> vertical de l'image)</br>
+            Change l'<a href="#imageVerticalAlignment">alignement</a> vertical de l'image par "imageVerticalAlignment".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "_renderBeforeHierarchy">_renderBeforeHierarchy()</h3>
+        <div>
+            Paramètres : surface (surface parent)</br>
+            Met la surface "surface" à jour avec le widget dessus et retourne "surface" mis à jour.</br>
+            Dans Mimage, elle affiche l'<a href="#_imageToDraw">image</a> sur la surface.</br>
+            Elle s'occupe de l'alignement/position de l'image, mais pas de la taille (c'est <a href="#_resizeImage">_resizeImage</a> qui s'en occupe).</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_renderBeforeHierarchy">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "_resizeImage">_resizeImage()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Recadre l'image selon le <a href="#imageReframing">imageReframing</a> et stocke le résultat dans <a href="#_imageToDraw">_imageToDraw</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+
+        <h2>Variables</h2>
+        <h3 id = "imageHorizontalAlignment">imageHorizontalAlignment</h3>
+        <div>
+            Déifni l'alignement horizontal de l'image.</br>
+            Si il est égal à -1, l'image est située à la coordonnée x de <a href="#imagePosition">imagePosition</a>.</br>
+            Si il est égal à 0, l'image est alignée à gauche du MImage.</br>
+            Si il est égal à 1, l'image est alignée au milieu du MImage.</br>
+            Si il est égal à 2, l'image est alignée à droite du MImage.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "imageLink">imageLink</h3>
+        <div>
+            Chemin d'accés vers l'image à afficher.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "imagePosition">imagePosition</h3>
+        <div>
+            Position de l'image à afficher.
+        </div>
+        <h3 id = "imageReframing">imageReframing</h3>
+        <div>
+            Défini le recadrement de l'image.</br>
+            Si il est égal à 0, il n'y a aucun recadrement.</br>
+            Si il est égal à 1, l'image est recadré pour tenir sur l'axe horizontal dans le MImage.</br>
+            Si il est égal à 2, l'image est recadré pour tenir sur l'axe vertical dans le MImage.</br>
+            Si il est égal à 3, l'image est recadré pour tenir entièrement dans l'image dans le MImage.</br>
+            Si il est égal à 4, l'image est recadré selon imageSize.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "imageSize">imageSize</h3>
+        <div>
+            Défini la taille de l'image si <a href="#imageReframing">imageReframing</a> est égal à 4.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "imageVerticalAlignment">imageVerticalAlignment</h3>
+        <div>
+            Déifni l'alignement vertical de l'image.</br>
+            Si il est égal à -1, l'image est située à la coordonnée y de <a href="#imagePosition">imagePosition</a>.</br>
+            Si il est égal à 0, l'image est alignée en haut du MImage.</br>
+            Si il est égal à 1, l'image est alignée au milieu du MImage.</br>
+            Si il est égal à 2, l'image est alignée en bas du MImage.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "_image">_image</h3>
+        <div>
+            Objet pygame <a href="https://www.pygame.org/docs/ref/image.html">image</a> de l'image; assigné par <a href="#setImageLink">setImageLink</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+        <h3 id = "_imageToDraw">_imageToDraw</h3>
+        <div>
+            Objet pygame <a href="https://www.pygame.org/docs/ref/image.html">image</a> de l'image, modifié avec le <a href="#imageReframing">recadrement</a> nécessaire.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.1.0.
+        </div>
+    </body>
+</html>

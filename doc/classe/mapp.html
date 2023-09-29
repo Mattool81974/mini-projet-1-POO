@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="../style.css">
+        <meta charset="utf-8">
+        <title>MLib - MApp</title>
+    </head>
+    <body>
+        <h1>MApp</h1>
+        <div>
+            MApp est la classe primaire permettant de définir la fenêtre principale de l'interface graphique.</br>
+            Elle hérite de <a href="mwidget.html">mwidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h2 id="consoleSystem">Système de console</h2>
+        <div>
+            MApp contient un système de console qui permet de garder un oeil sur le déroulé du programme. Des l'entrée dans une fonction, une petite ligne de code est ajoutée pour l'enregistrer dans la console.
+            La console est écrit une fois par seconde dans un fichier au chemin d'accés <a href="#consoleFile">consoleFile</a> une fois par seconde. Toutes les fonctions modifiées par un ajout console ne seront pas marquées comme modifiées à la version actuelle.
+        </div>
+
+        <h2>Fonctions</h2>
+        <h3 id="__init__">__init__()</h3>
+        <div>
+            Paramètres : pygameWindow (assignée à la variable <a href="#_pygameWindow">pygameWindow</a>), windowTitle (assignée à la variable <a href="#windowTitle">windowTitle</a>), windowWidth (défini la largeur de la fenêtre), windowHeight (défini la hauteur de la fenêtre), printFps (assignée à la variable <a href="#printFps">printFps</a>), windowIcon (chemin d'accés vers l'icône de l'application)</br>
+            Crée la fenêtre sur lequel effectuer les modifications graphiques.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frame">frame()</h3>
+        <div>
+            Paramètres : Aucun</br>
+            Effectue toutes les actions de la fenêtre graphique.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frameEvent">frameEvent()</h3>
+        <div>
+            Paramètres : Aucun</br>
+            Effectue toutes les actions de la fenêtre graphique qui correspondent aux <a href="../base.html#event">évènements</a>.</br>
+            Cette fonction s'occupe aussi d'actualiser le <a href="#deltaTime">deltaTime</a>, puis <a href="#fps">fps</a>, puis de stocker la <a href="#consoleSystem">console</a> sous format ".txt".</br>
+            Il est FORTEMENT conseillé d'appeler cette fonction au début d'une frame.</br>
+            Modifié à la <a href="../versions.html">version</a> 2.0.1.
+        </div>
+        <h3 id="frameGraphics">frameGraphics()</h3>
+        <div>
+            Paramètres : Aucun</br>
+            Effectue toutes les actions de la fenêtre graphique qui correspondent aux graphismes.</br>
+            Juste avant, elle appelle <a href="./mwidget.html#_lastUpdate">_lastUpdate</a> de tous les widgets.</br>
+            Il est FORTEMENT conseillé d'appeler cette fonction à la fin d'une frame.</br>
+            Modifié à la <a href="../versions.html">version</a> 2.0.1.
+        </div>
+        <h3 id="getConsole">getConsole()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne si la <a href="#console">console</a> est activée.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="getConsoleContent">getConsoleContent()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la valeur du contenu de la <a href="#consoleContent">console</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="getConsoleFile">getConsoleFile()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la valeur du <a href="#consoleFile">chemin d'accés</a> du fichier où stocker la console.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="getDeltaTime">getDeltaTime()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne <a href="#deltaTime">deltaTime</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getFps">getFps()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne <a href="#fps">fps</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getPressedKey">getPressedKey()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne <a href="pressedKey">pressedKey</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getPrintFps">getPrintFps()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne <a href="#printFps">printFps</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getWidgets">getWidgets()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne <a href="#_widgets">_widgets</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getWindowIcon">getWindowIcon()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la valeur du chemin d'accés vers l'<a href="#windowIcon">icône</a> de la fenêtre.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="getWindowTitle">getWindowTitle()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#windowTitle">titre</a> de la fenêtre.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="isKeyPressed">isKeyPressed()</h3>
+        <div>
+            Paramètres : key (touche à vérifier)</br>
+            Retourne si la touche "key" est pressé (si elle est dans <a href="pressedKey">pressedKey</a>).</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="setConsole">setConsole()</h3>
+        <div>
+            Paramètres : console (nouvelle valeur de si la <a href="#console">console</a> est active ou non)</br>
+            Change la valeur de si la <a href="#console">console</a> est active ou non par "console".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="setConsoleContent">setConsoleContent()</h3>
+        <div>
+            Paramètres : consoleContent (<a href="#consoleContent">contenu</a> du texte de la console)</br>
+            Change la valeur du <a href="#consoleContent">contenu</a> du texte de la console par "consoleContent".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="setConsoleFile">setConsoleFile()</h3>
+        <div>
+            Paramètres : consoleFile (nouveau <a href="#consoleFile">chemin d'accés</a> du fichier où stocker la console)</br>
+            Change la valeur du <a href="#consoleFile">chemin d'accés</a> du fichier où stocker la console par "consoleFile".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="setPrintFps">setPrintFps()</h3>
+        <div>
+            Paramètres : printFps (nouvelle valeur de <a href="#printFps">printFps</a>)</br>
+            Change la valeur de <a href="#printFps">printFps</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="setWindowIcon">setWindowIcon()</h3>
+        <div>
+            Paramètres : windowIcon (nouveau chemin d'accés vers l'<a href="#windowIcon">icône</a> de la fenêtre)</br>
+            Change la valeur du chemin d'accés vers l'<a href="#windowIcon">icône</a> de la fenêtre par "windowIcon".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id="setWindowTitle">setWindowTitle()</h3>
+        <div>
+            Paramètres : windowTitle (nouveau titre de la fenêtre)</br>
+            Change le <a href="#windowTitle">titre</a> de la fenêtre.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="writeConsole">writeConsole()</h3>
+        <div>
+            Paramètres : toWrite (chose à écrire dans la console), indentation (nombre d'espace * 2 à rajouter avant toWrite, basiquement à 0), writer (objet appelant la fonction, basiquement à 0)</br>
+            Permet d'écrire quelque chose dans la <a href="#consoleContent">console</a>.</br>
+            Elle rajoute au texte l'indentation, le type de l'objet, l'ID de l'objet et la date/heure.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id = "_containsWidget">_containsWidget</h3>
+        <div>
+            Paramètres : widget (widget à chercher)</br>
+            Retourne si le "widget" est contenu dans <a href="#_widgets">_widgets</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_declaringWidget">_declaringWidget()</h3>
+        <div>
+            Paramètres : widget (widget à enregistrer)</br>
+            Fonction permettant d'enregistrer un widget nouvellement crée dans <a href="#_widgets">_widgets</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="_undeclaringWidget">_undeclaringWidget()</h3>
+        <div>
+            Paramètres : widget (widget à désenregistrer)</br>
+            Fonction permettant de supprimer tout liens avec un widget dans le MApp.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.1.
+        </div>
+
+        <h2>Variables</h2>
+        <h3 id = "console">console</h3>
+        <div>
+            Booléen qui indique si la console est utilisé ou non.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id = "consoleContent">consoleContent</h3>
+        <div>
+            Contenu du texte de la console.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id = "consoleFile">consoleFile</h3>
+        <div>
+            Chemin d'accés du fichier où stocker la console, basiquement à "./console.txt".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id = "cursorOnOnverflight">cursorOnOnverflight</h3>
+        <div>
+            Même variable que pour le <a href="./mwidget.html">mwidget</a>.</br>
+            La particularité de ce curseur est que celui là représente le curseur de base de l'interface graphique.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "deltaTime">deltaTime</h3>
+        <div>
+            Temps entre la dernière <a href="#frameEvent">frame évènement</a> et la <a href="#frameEvent">frame évènement</a> actuel.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frameCount">frameCount</h3>
+        <div>
+            Nombre de <a href="#frameEvent">frameEvent</a> depuis le début du programme.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id = "focusedWidget">focusedWidget</h3>
+        <div>
+            Widget focus par l'utilisateur (quand l'utilisateur click dessus).</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "fps">fps</h3>
+        <div>
+            Nombre de frames par secondes.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "pressedKey">pressedKey</h3>
+        <div>
+            Liste des touches pressées pendant la frame.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "printFps">fps</h3>
+        <div>
+            Booléen qui détermine si le MApp print le nombre de FPS à chaque updates de <a href="#fps">fps</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "windowIcon">windowIcon</h3>
+        <div>
+            Chemin d'accés vers l'icône de la fenêtre (en haut à gauche de la fenêtre).</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.4.0.
+        </div>
+        <h3 id = "windowTitle">windowTitle</h3>
+        <div>
+            Texte affiché en haut de la fenêtre graphique.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_deltaTimeCache">deltaTime</h3>
+        <div>
+            Variable cacher pour permettre d'actualiser <a href="#deltaTime">deltaTime</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_fpsCount">fpsCount</h3>
+        <div>
+            Nombre de frames depuis la dernière update de <a href="#fps">fps</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_fpsDuration">fpsDuration</h3>
+        <div>
+            Nombre de secondes depuis la dernière update de <a href="#fps">fps</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_lastOverflightedWidget">_lastOverflightedWidget</h3>
+        <div>
+            Widget survolé pendant la dernière frame.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id = "_modifiedWidget">_modifiedWidget</h3>
+        <div>
+            Liste de tous les widgets modifiés à la dernière frame dans <a href="#frameEvent">frameEvent</a> pour leur appliquer <a href="./mwidget.html#resetWidget">resetWidget()</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_pygameWindow">pygameWindow</h3>
+        <div>
+            Fenêtre pygame de base ou effectuer les modifications.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_widgets">_widgets</h3>
+        <div>
+            Liste de tous les widgets présents dans le MApp.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+    </body>
+</html>

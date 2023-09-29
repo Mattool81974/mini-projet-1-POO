@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <meta charset="utf-8">
+        <title>MLib - Futur</title>
+    </head>
+    <body>
+        <h1 id="base">Versions</h1>
+        <div>
+            Cette page contient toutes les versions de la bibliothèque.</br>
+            Le système de version fonctionne sous le signe : A.B.C, où A est la version principale (changement majeur), B une sous-version (changement mineur) et C les ajustements de sous versions.</br>
+            Les versions sont aussi chronologiques.</br>
+            Il est indiqué sur chaque fonction/classe/variable la version à laquelle elle a étée ajouté/modifié.
+        </div>
+        <h3>2.0.1, parue le 28/09/2023-18:30</h3>
+        <div>
+            -Ajout de <a href="./classe/mwidget.html#delete">delete</a> dans MWidget pour mieux anticiper la suppresion d'un widget.</br>
+            -Ajout de <a href="./classe/mwidget.html#_lastUpdate">_lastUpdate</a> dans MWidget, appelée juste avant <a href="./classe/mapp.html#frameGraphics">frameGraphics</a>.</br>
+            -Ajout de l'<a href="./classe/mtext.html#antiAnaliasing">anti analiasing</a> dans MText.</br>
+            -Changement de la classe parent de <a href="./classe/mscrollarea.html">MScrollArea</a> de <a href="./classe/mframe.html">MFrame</a> à <a href="./classe/mwidget.html">MWidget</a>.</br>
+            -Correction de la position des barres dans <a href="./classe/mscrollarea.html">MScrollArea</a>.
+        </div>
+        <h3>2.0.0, parue le 26/09/2023-20:00</h3>
+        <div>
+            -Ajout de la classe secondaire "<a href="./classe/mbar.html">MBar</a>".</br>
+            -Ajout de la classe secondaire "<a href="./classe/mbutton.html">MButton"</a>.</br>
+            -Ajout de la classe secondaire "<a href="./classe/mscrollarea.html">MScrollArea"</a>.</br>
+            -Ajout de "<a href="./classe/mwidget.html#_isNotOverflightedAnymore">_isNotOverflightedAnymore</a>" dans MWidget, appelé quand le widget n'est plus survolé par le curseur.</br>
+            -Ajout de "<a href="./classe/mwidget.html#_lateUpdate">_lateUpdate</a>" dans MWdiget, appelé chaque frame après le contrôle des évènments.</br>
+            -Ajout des classes de catégorie "secondaire".</br>
+            -Ajotu d'une page de navigation dans la documentation.</br>
+            -Modification de l'usage de <a href="./classe/mwidget.html#mouseDown">mouseDown</a> et <a href="./classe/mwidget.html#mouseUp">mouseUp</a> dans MWidget.</br></br>
+            Cette version est sortie un peu en précipitation, les fonctionnalités listées seront entièrement débuggées dans les versions suivantes.</br>
+        </div>
+        <h3>1.4.0, parue le 22/09/2023-18:30</h3>
+        <div>
+            -Ajout de "_mouseWheel" dans <a href="./classe/mwidget.html#_mouseWheel">MWidget</a> pour permettre de prendre en charge la roulette de la souris.</br>
+            -Ajout d'un système de console dans <a href="./classe/mapp.html">MApp</a> pour faciliter le débugage de MLib.</br>
+            -Ajout d'un système de navigation (proche d'un système avec des sliders) du texte dans <a href="./classe/mtext.html">MText</a>.</br>
+            -Ajout d'une icône de l'application dans <a href="./classe/mapp.html">MApp</a>.</br>
+            -Ajout de raccourcis claviers pour la sélection dans les entrées textes normales dans <a href="./classe/mtext.html">MText</a>.</br>
+            -Optimisation de l'affichage de <a href="./classe/mtext.html">MText</a>.
+            -Résolution d'un bug lors de la sélection de texte aligné dans <a href="./classe/mtext.html">MText</a>.
+        </div>
+        <h3>1.3.0, parue le 15/09/2023-16:00</h3>
+        <div>
+            -Ajout du copie/collage du texte dans <a href="./classe/mtext.html">MText</a>.</br>
+            -Ajout de la sélection de texte dans <a href="./classe/mtext.html">MText</a>.</br>
+            -Modification de <a href="./classe/mtext.html#setInput">setInput</a> dans MText pour modifier le curseur et la sélection en une seule fonction.</br>
+            -Optimisation de <a href="./classe/mtext.html">MText</a> par l'affichage de seulement le texte visible.
+        </div>
+        <h3>1.2.0, parue le 07/09/2023-17:00</h3>
+        <div>
+            -Ajout d'un offset au texte dans <a href="./classe/mtext.html">MText</a>.</br>
+            -Résolution d'un bug avec le curseur pour les <a href="./classe/mtext.html#dynamicCut">MText</a> sans coupure dynamique.</br>
+            -Résolution de bugs avec la bordure et l'alignement du texte dans <a href="./classe/mtext.html#dynamicCut">MText</a>.
+        </div>
+        <h3>1.1.0, parue le 04/09/2023-15:30</h3>
+        <div>
+            -Ajout de l'alignement/position sur les images de <a href="./classe/mimage.html">MImage</a>.</br>
+            -Ajout du recadrement/taille sur les images de <a href="./classe/mimage.html">MImage</a>.
+        </div>
+        <h3>1.0.0, parue le 03/09/2023-17:00</h3>
+        <div>
+            Première version du système de versionning MLib.</br>
+            Tous les ajouts ne sont pas listés, car ils sont trop nombreux.
+        </div>
+    </body>
+</html>

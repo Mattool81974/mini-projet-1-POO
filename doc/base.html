@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <meta charset="utf-8">
+        <title>MLib</title>
+    </head>
+    <body>
+        <h1 id="base">Base</h1>
+        <div>
+            MLib est une petite librairie pour faire des <b>interfaces graphiques</b> utilisant <b>pygame</b>. Elle fonctionne avec un système de <b>widget</b>.
+            Un widget est un élément graphique de la fenêtre. L'élément <b>fenêtre</b> est un widget un peu différent qui contient tout les autres widgets.
+            Il y a un système de hiérarchie où les widgets peuvent avoir des <b>parents</b>. Le widget enfant s'affiche dans le widget parent et adopte son système de coordonnée.
+            Les widgets ont une <b>taille</b> (w, h) et une <b>position</b> (x, y). On peut modifier leur apparence <b>pixel par pixel</b>.
+            La fenêtre principale s'occupe <b>d'actualiser l'interface graphique</b>.
+        </div>
+        <h2 id="besoins">Besoins</h2>
+        <div>
+            Pour pouvoir s'éxécuter, MLib nécessite l'installation de la librairie <a href="https://www.pygame.org">pygame</a> et <a href="https://pypi.org/project/pyperclip/">pyperclip</a>.</br>
+            Pour installer ces librairies, ouvrez l'invite de commande (la touche Windows+r puis marquer "cmd" sur windows) et tapez les 2 commandes suivantes :</br>
+            pip install pygame</br>
+            pip install pyperclip
+        </div>
+        <h2 id="class">Classes</h2>
+        <div>
+            MLib utilise la programmation orientée objet pour fonctionner. Chaque élément graphique correspond à une instance de classe (MWidget, MText...).
+            Il y a 2 types de classes :</br>
+            -Primaire : classe permettant de construire d'autre classes de même fonction sans besoins d'autre classes poru cette fonction</br>
+            -N aire : classe hérité de classe N-1 aire</br>
+        </div>
+        <h2 id="event">Évènements</h2>
+        <div>
+            Les évènements sont des actions qui sont effectuées soit par l'utilisateur, soit par un widget, soit par l'OS. </br>
+            Voici une liste d'évènements pour la <a href="./versions.html">version</a> 1.0.0 : </br>
+            -pygame.QUIT : permet de quitter la fenêtre graphique.</br>
+            -pygame.MOUSEBUTTONDOWN : un bouton de la souris est clické.</br>
+            -pygame.MOUSEBUTTONUP : un bouton de la souris n'est plus clické.</br>
+            -pygame.KEYDOWN : une touche du clavier est clické.</br>
+            -pygame.KEYUP : une touche du clavier n'est plus clické.</br>
+            -pygame.TEXTINPUT : du texte en entré par l'utilisateur.
+        </div>
+    </body>
+</html>

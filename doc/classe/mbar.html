@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="../style.css">
+        <meta charset="utf-8">
+        <title>MLib - MBar</title>
+    </head>
+    <body>
+        <h1>MBar</h1>
+        <div>
+            MBar est une classe secondaire pour définir une barre/slider.</br>
+            Elle hérite de <a href="mframe.html">MFrame</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="display">Affichage</h3>
+        <div>
+            MBar hérite de MFrame. Elle contient une petite <a href="./mframe.html#setFrameWidth">bordure</a> de 1 de large. Elle peut être horizontale ou verticale selon <a href="#ORIENTATION">ORIENTATION</a>.
+            Elle contient un bouton amovible pour changer la valeur dans le MBar.
+        </div>
+        <h3 id="working">Fonctionnement</h3>
+        <div>
+            MBar permet d'utiliser un bouton amovible pour sélectionner une valeur, comprise entre <a href="#minValue">minValue</a> <a href="#maxValue">maxValue</a>.
+            Chaque valeur dans le MBar est séparé de <a href="#step">step</a> unités (pas encore disponible).
+        </div>
+
+        <h2>Fonctions</h2>
+        <h3 id="__init__">__init__()</h3>
+        <div>
+            Paramètres : orientation (assignée à la variable <a href="#ORIENTATION">ORIENTATION</a>), minValue (assignée à la variable <a href="#minValue">minValue</a>), maxValue (assignée à la variable <a href="#maxValue">maxValue</a>), x (assignée à la variabe <a href="./mwidget.html#x">x</a> de MWidget), y (assignée à la variabe <a href="./mwidget.html#y">y</a> de MWidget), width (assignée à la variable <a href="./mwidget.html#width">width</a> de MWidget), height (assignée à la variable <a href="./mwidget.html#height">height</a> de MWidget), parent (assignée à la variable <a href="./mwidget.html#parent">parent</a> de MWidget), widgetType (assignée à la variable <a href="./mwidget.html#_type">_type</a> de MWidget, basiquememnt mit à "MBar")</br>
+            Construit un objet MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getButtonBackgroundColor">getButtonBackgroundColor()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la valeur de la <a href="#buttonBackgroundColor">couleur</a> d'arrière plan du bouton amovible.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getButtonBackgroundColorOnOverflight">getButtonBackgroundColorOnOverflight()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la valeur de la <a href="#buttonBackgroundColorOnOverflight">couleur</a> d'arrière plan du bouton amovible lors du survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getButtonOrientationLength">getButtonOrientationLength</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#buttonOrientationLength">longueur</a> du bouton amovible sur l'axe de l'<a href="#ORIENTATION">orientation</a>.</br>
+        </div>
+        <h3 id="getChangeButtonBackgroundColorOnOverflight">getChangeButtonBackgroundColorOnOverflight()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#changeButtonBackgroundColorOnOverflight">booléen</a> qui indique si la couleur d'arrière plan du bouton amovible change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getMaxValue">getMaxValue()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#maxValue">valeur maximale</a> possible dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getMinValue">getMinValue()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#minValue">valeur minimale</a> possible dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getStep">getStep()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#step">pas</a> entre chaque valeur dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getValue">getValue()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#value">valeur</a> actuelle dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getValueChanged">getValueChanged()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne si la <a href="#value">valeur</a> a été <a href="#_valueChanged">modifié</a> durant cette frame.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getButtonOrientationPos">getButtonOrientationPos()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Calcul et renvoie la coordonnée sur l'axe de navigation du bouton selon <a href="#value">value</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="isValueIn">isValueIn()</h3>
+        <div>
+            Paramètres : value (valeur à tester)</br>
+            Retourne si "value" est entre <a href="#minValue">minValue</a> et <a href="#maxValue">maxValue</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setButtonBackgroundColor">setButtonBackgroundColor()</h3>
+        <div>
+            Paramètres : buttonBackgroundColor (nouvelle valeur de la <a href="#buttonBackgroundColor">couleur</a> d'arrière plan du bouton amovible)</br>
+            Change la valeur de la <a href="#buttonBackgroundColor">couleur</a> d'arrière plan du bouton amovible par "buttonBackgroundColor".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setButtonBackgroundColorOnOverflight">setButtonBackgroundColorOnOverflight()</h3>
+        <div>
+            Paramètres : buttonBackgroundColorOnOverflight (nouvelle valeur de la <a href="#buttonBackgroundColorOnOverflight">couleur</a> d'arrière plan du bouton amovible lors du survol du curseur)</br>
+            Change la valeur de la <a href="#buttonBackgroundColorOnOverflight">couleur</a> d'arrière plan du bouton amovible lors du survol du curseur par "buttonBackgroundColorOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setButtonOrientationLength">setButtonOrientationLength()</h3>
+        <div>
+            Paramètres : buttonOrientationLength (nouvelle <a href="#buttonOrientationLength">longeur</a> du bouton amovible sur l'axe de l'<a href="#ORIENTATION">orientation</a>)</br>
+            Change la <a href="#buttonOrientationLength">longeur</a> du bouton amovible sur l'axe de l'<a href="#ORIENTATION">orientation</a> par "buttonOrientationLength".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setChangeButtonBackgroundColorOnOverflight">setChangeButtonBackgroundColorOnOverflight()</h3>
+        <div>
+            Paramètres : changeButtonBackgroundColorOnOverflight (nouvelle valeur du <a href="#changeButtonBackgroundColorOnOverflight">booléen</a> qui indique si la couleur d'arrière plan du bouton amovible change au survol du curseur)</br>
+            Retourne le <a href="#changeButtonBackgroundColorOnOverflight">booléen</a> qui indique si la couleur d'arrière plan du bouton amovible change au survol du curseur par "changeButtonBackgroundColorOnOverflight".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setMaxValue">setMaxValue()</h3>
+        <div>
+            Paramètres : maxValue (nouvelle <a href="#maxValue">valeur maximale</a> possible dans le MBar)</br>
+            Change la <a href="#maxValue">valeur maximale</a> possible dans le MBar par "maxValue".</br>
+            Cette valeur doit être supérieur ou égal à <a href="#minValue">minValue</a> et <a href="#value">value</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setMinValue">setMinValue()</h3>
+        <div>
+            Paramètres : minValue (nouvelle <a href="#minValue">valeur minimale</a> possible dans le MBar)</br>
+            Change la <a href="#minValue">valeur minimale</a> possible dans le MBar par "minValue".</br>
+            Cette valeur doit être sinférieur ou égal à <a href="#maxValue">maxValue</a> et <a href="#value">value</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setStep">setStep()</h3>
+        <div>
+            Paramètres : step (nouveau <a href="#step">pas</a> entre chaque valeur dans le MBar)</br>
+            Change le <a href="#step">pas</a> entre chaque valeur dans le MBar par "step".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="setValue">setValue()</h3>
+        <div>
+            Paramètres : value (nouvelle <a href="#value">valeur</a> actuelle dans le MBar)</br>
+            Change la <a href="#value">valeur</a> actuelle dans le MBar par "value".</br>
+            Modifié à la <a href="../versions.html">version</a> 2.0.1.
+        </div>
+        <h3 id="softResetWidget">softResetWidget()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Effectue un reset du widget sans modifications graphiques.</br>
+            Dans MBar, elle met <a href="#_valueChanged">_valueChanged</a> à False.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_doNotOverflightedEffect">_doNotOverflightedEffect()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Effectue sur le MBar les actions nécessaires lorsque le MBar est normal (non survolé).</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_doOverflightedEffect">_doOverflightedEffect()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Effectue sur le MBar les actions nécessaires lorsque le MBar est survolé.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_getValueAtPos">_getValueAtPos()</h3>
+        <div>
+            Paramètres : relativePos (position à tester dans le MBar)</br>
+            Retourne la valeur du MBar à la position "relativePos".</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isGettingMouseDown">_isGettingMouseDown()</h3>
+        <div>
+            Paramètres : button (nombre entier du bouton de souris clické), relativePos (position relative au widget du curseur de la souris)</br>
+            Fonction appelé lorsque le widget est clické.</br>
+            Si button est "1", la touche clické est la touche gauche, si button est "2", la touche clické est la molette, si button est "3", la touche clické est la touche droite.</br>
+            Met à jour <a href="#_buttonClicked">_buttonClicked</a> si nécessaire.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isGettingMouseDown">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isGettingMouseUp">_isGettingMouseUp()</h3>
+        <div>
+            Paramètres : button (nombre entier du bouton de souris clické), relativePos (position relative au widget du curseur de la souris)</br>
+            Fonction appelé lorsque le widget n'est plus clické.</br>
+            Si button est "1", la touche clické est la touche gauche, si button est "2", la touche clické est la molette, si button est "3", la touche clické est la touche droite.</br>
+            Met à jour <a href="#_buttonClicked">_buttonClicked</a> à "False".</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isGettingMouseDown">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isGettingOverflighted">_isGettingOverflighted()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Fonction appelé lorsque le widget est survolé.</br>
+            Permet d'appeler <a href="#_doOverflightedEffect">_doOverflightedEffect</a> lors du survol du curseur.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isGettingOverflighted">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isNotOverflightedAnymore">_isNotOverflightedAnymore()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Fonction appelé lorsque le widget n'est plus survolé par le curseur.</br>
+            Permet de savoir quand le widget n'est plus survolé pour appeler <a href="#_doNotOverflightedEffect">_doNotOverflightedEffect</a>.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_isNotOverfligthedAnymore">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_isPosOverButton">_isPosOverButton()</h3>
+        <div>
+            Paramètres : relativePos (position à tester)</br>
+            Retourne si la position "relativePos" est au dessus du bouton amovible.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_renderBeforeHierarchy">_renderBeforeHierarchy()</h3>
+        <div>
+            Paramètres : surface (surface parent)</br>
+            Met la surface "surface" à jour avec le widget dessus et retourne "surface" mis à jour.</br>
+            Dans MBar, elle s'occupe d'afficher le bouton amovible.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_renderBeforeHierarchy">MWidget</a>.</br>
+            Modifié à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+
+        <h2>Variables</h2>
+        <h3 id="buttonBackgroundColor">buttonBackgroundColor</h3>
+        <div>
+            Couleur d'arrière plan du bouton amovible.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="buttonBackgroundColorOnOverflight">buttonBackgroundColorOnOverflight</h3>
+        <div>
+            Couleur d'arrière plan du bouton amovible lors du survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="buttonOrientationLength">_buttonOrientationLength</h3>
+        <div>
+            Longueur du bouton amovible sur l'axe de l'<a href="#ORIENTATION">orientation</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="changeButtonBackgroundColorOnOverflight">changeButtonBackgroundColorOnOverflight</h3>
+        <div>
+            Booléen qui indique si la couleur d'arrière plan du bouton amovible change au survol du curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="maxValue">maxValue</h3>
+        <div>
+            Valeur maximale possible dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="minValue">minValue</h3>
+        <div>
+            Valeur minimale possible dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="step">step</h3>
+        <div>
+            Pas entre chaque dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="value">value</h3>
+        <div>
+            Valeur actuelle dans le MBar.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="ORIENTATION">ORIENTATION</h3>
+        <div>
+            Variable constante défini dans le constructeur définissant l'orientation du MBar (0 si horizontal et 1 si vertical).</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_buttonClicked">_buttonClicked</h3>
+        <div>
+            Booléen qui indique si le bouton amovible est clické ou non.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_buttonOverflighted">_buttonOverflighted</h3>
+        <div>
+            Booléen qui indique si le bouton amovible est survolé par le curseur ou non.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_valueChanged">_valueChanged</h3>
+        <div>
+            Booléen qui indique si la valeur dans le MBar a été modifié pendant cette frame.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+    </body>
+</html>

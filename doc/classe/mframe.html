@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="../style.css">
+        <meta charset="utf-8">
+        <title>MLib - MFrame</title>
+    </head>
+    <body>
+        <h1>MFrame</h1>
+        <div>
+            MFrame est une classe primaire permttant de créer des objets graphiques avec une bordure.</br>
+            Elle hérite de <a href="./mwidget.html">MWidget</a>.
+        </div>
+
+        <h2>Fonctions</h2>
+        <h3 id = "__init__">__init__()</h3>
+        <div>
+            Paramètres : x (assignée à la variabe <a href="./mwidget.html#x">x</a>), y (assignée à la variabe <a href="./mwidget.html#y">y</a>), width (assignée à la variable <a href="./mwidget.html#width">width</a>), height (assignée à la variable <a href="./mwidget.html#height">height</a>), parent (assignée à la variable <a href="./mwidget.html#parent">parent</a>), widgetType (assignée à la variable <a href="_type">_type</a>, basiquememnt mit à "MFrame")</br>
+            Construit un objet MFrame.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getCornerRadius">getCornerRadius()</h3>
+        <div>
+            Paramètres : index (coin à retourner)</br>
+            Retourne le rayon du coin selon l'index.</br>
+            Si index est à 0, retourne <a href="#leftTopCornerRadius">leftTopCornerRadius</a>.</br>
+            Si index est à 1, retourne <a href="#leftBottomCornerRadius">leftBottomCornerRadius</a>.</br>
+            Si index est à 2, retourne <a href="#rightBottomCornerRadius">rightBottomCornerRadius</a>.</br>
+            Si index est à 3, retourne <a href="#rightTopCornerRadius">rightBottomCornerRadius</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getFrameBeforeHierarchy">getFrameBeforeHierarchy()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne <a href="frameBeforeHierarchy">frameBeforeHierarchy</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getFrameColor">getFrameColor()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la couleur de bordure <a href="#frameColor">frameColor</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="getFrameWidth">getFrameWidth()</h3>
+        <div>
+            Paramètres : index (bordure à retourner)</br>
+            Retourne la largeur de la bordure selon index.</br>
+            Si index est à 0, retourne <a href="#frameTopWidth">frameTopWidth</a>.</br>
+            Si index est à 1, retourne <a href="#frameLeftWidth">frameLeftWidth</a>.</br>
+            Si index est à 2, retourne <a href="#frameBottomWidth">frameBottomWidth</a>.</br>
+            Si index est à 3, retourne <a href="#frameRightWidth">frameRightWidth</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="setCornerRadius">setCornerRadius()</h3>
+        <div>
+            Paramètres : radius (nouveau rayon du coin), index (coin à retourner)</br>
+            Change le rayon du coin selon l'index à radius.</br>
+            Si index est à 0, modifie <a href="#leftTopCornerRadius">leftTopCornerRadius</a>.</br>
+            Si index est à 1, modifie <a href="#leftBottomCornerRadius">leftBottomCornerRadius</a>.</br>
+            Si index est à 2, modifie <a href="#rightBottomCornerRadius">rightBottomCornerRadius</a>.</br>
+            Si index est à 3, modifie <a href="#rightTopCornerRadius">rightBottomCornerRadius</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="setFrameBeforeHierarchy">setFrameBeforeHierarchy()</h3>
+        <div>
+            Paramètres : frameBeforeHierarchy (nouvelle valeur de <a href="frameBeforeHierarchy">frameBeforeHierarchy</a>)</br>
+            Change la valeur de <a href="frameBeforeHierarchy">frameBeforeHierarchy</a> pour "frameBeforeHierarchy".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="setFrameColor">setFrameColor()</h3>
+        <div>
+            Paramètres : color (nouvelle <a href="#frameColor">couleur</a> de la bordure)</br>
+            Change la couleur de bordure <a href="#frameColor">frameColor</a> par "color".</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="setFrameWidth">setFrameWidth()</h3>
+        <div>
+            Paramètres : width (nouvelle largeur de la bordure), index (bordure à modifier)</br>
+            Change la largeur de la bordure selon index à "width".</br>
+            Si index est à 0, modifie <a href="#frameTopWidth">frameTopWidth</a>.</br>
+            Si index est à 1, modifie <a href="#frameLeftWidth">frameLeftWidth</a>.</br>
+            Si index est à 2, modifie <a href="#frameBottomWidth">frameBottomWidth</a>.</br>
+            Si index est à 3, modifie <a href="#frameRightWidth">frameRightWidth</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_renderAfterHierarchy">_renderAfterHierarchy()</h3>
+        <div>
+            Paramètres : surface (surface parent)</br>
+            Met la surface "surface" à jour avec le widget dessus et retourne "surface" mis à jour.</br>
+            Dans MFrame, elle s'occupe de dessiner la bordure si <a href="#frameBeforeHierarchy">frameBeforeHierarchy</a> est à False.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_renderAfterHierarchy">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id = "_renderBeforeHierarchy">_renderBeforeHierarchy()</h3>
+        <div>
+            Paramètres : surface (surface parent)</br>
+            Met la surface "surface" à jour avec le widget dessus et retourne "surface" mis à jour.</br>
+            Dans MFrame, elle s'occupe de dessiner la bordure si <a href="#frameBeforeHierarchy">frameBeforeHierarchy</a> est à True.</br>
+            Cette fonction est héritée de <a href="./mwidget.html#_renderBeforeHierarchy">MWidget</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+
+        <h2>Variables</h2>
+        <h3 id="frameBeforeHierarchy">frameBeforeHierarchy</h3>
+        <div>
+            Booléen qui décrit si la bordure est dessiné avant ou après la hiérarchie.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frameBottomWidth">frameBottomWidth</h3>
+        <div>
+            Largeur en pixel de la largeur en bas.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frameColor">frameColor</h3>
+        <div>
+            Couleur de la bordure.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frameLeftWidth">frameLeftWidth</h3>
+        <div>
+            Largeur en pixel de la largeur à gauche.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frameRightWidth">frameRightWidth</h3>
+        <div>
+            Largeur en pixel de la largeur à droite.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="frameTopWidth">frameTopWidth</h3>
+        <div>
+            Largeur en pixel de la largeur en haut.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="leftBottomCornerRadius">leftBottomCornerRadius</h3>
+        <div>
+            Rayon du coin inférieur gauche de la bordure.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="leftTopCornerRadius">leftTopCornerRadius</h3>
+        <div>
+            Rayon du coin supérieur gauche de la bordure.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="rightBottomCornerRadius">rightBottomCornerRadius</h3>
+        <div>
+            Rayon du coin inférieur droit de la bordure.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+        <h3 id="rightTopCornerRadius">rightTopCornerRadius</h3>
+        <div>
+            Rayon du coin supérieur droit de la bordure.</br>
+            Ajouté à la <a href="../versions.html">version</a> 1.0.0.
+        </div>
+    </body>
+</html>

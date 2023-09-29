@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link rel="stylesheet" href="../style.css">
+        <meta charset="utf-8">
+        <title>MLib - MScrollArea</title>
+    </head>
+    <body>
+        <h1>MScrollArea</h1>
+        <div>
+            MScrollArea est une classe secondaire pour définir une zone qui peut contenir un widget <a href="#widgetToScroll">"widgetToScroll"</a> et scroller ce widget.</br>
+            Cette classe utilise <a href="./mbar.html">MBar</a> pour permettre le scroll dans le widget.</br>
+            Elle hérite de <a href="mframe.html">MFrame</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+
+        <h2>Fonctions</h2>
+        <h3 id = "__init__">__init__()</h3>
+        <div>
+            Paramètres : x (assignée à la variabe <a href="./mwidget.html#x">x</a> de MWidget), y (assignée à la variabe <a href="./mwidget.html#y">y</a> de MWidget), width (assignée à la variable <a href="./mwidget.html#width">width</a> de MWidget), height (assignée à la variable <a href="./mwidget.html#height">height</a> de MWidget), parent (assignée à la variable <a href="./mwidget.html#parent">parent</a> de MWidget), widgetType (assignée à la variable <a href="./mwidget.html#_type">_type</a> de MWidget, basiquememnt mit à "MButton")</br>
+            Construit un objet MButton.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getBarOrientationLength">getBarOrientationLength()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#barOrientationLength">largeur</a> d'orientation des barres.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getHorizontalBar">getHorizontalBar()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#horizontalBar">barre</a> horizontal en référence.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getVerticalBar">getVerticalBar()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne la <a href="#verticalBar">barre</a> vertical en référence.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="getWidgetToScroll">getWidgetToScroll()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Retourne le <a href="#widgetToScroll">widget</a> scrollant dans le curseur.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="placeBar">placeBar()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Configure les barres selon le <a href="#widgetToScroll">widgetToScroll</a> actuel.</br>
+            Modifié à la <a href="../versions.html">version</a> 2.0.1.
+        </div>
+        <h3 id="reload">reload()</h3>
+        <div>
+            Paramètres : aucun</br>
+            Recharge le widget en rappelant <a href="#setWidgetToScroll">setWidgetToScroll()</a> et <a href="#placeBar">placeBar</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.1.
+        </div>
+        <h3 id="setWidgetToScroll">setWidgetToScroll()</h3>
+        <div>
+            Paramètres : widgetToScroll (nouveau <a href="#widgetToScroll">widget</a> scrollant dans le curseur)</br>
+            Change le <a href="#widgetToScroll">widget</a> scrollant dans le curseur par "widgetToScroll".</br>
+            Change aussi le parent de "widgetToScroll" pour le MScrollArea.</br>
+            Modifié à la <a href="../versions.html">version</a> 2.0.1.
+        </div>
+        <h3 id="_lateUpdate">_lateUpdate()</h3>
+        <div>
+            Paramètres : deltaTime (temps passé entre cette frame et la dernière frame)</br>
+            Fonction appelée à chaque frame après le contrôle des éléments.</br>
+            Dans MBar, elle sert à ajuster la position de <a href="#widgetToScroll">widgetToScroll</a> selon la valeur des curseurs.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+
+        <h2>Variables</h2>
+        <h3 id="barOrientationLength">barOrientationLength</h3>
+        <div>
+            Taille de <a href="#horizontalBar">horizontalBar</a> et <a href="#verticalBar">verticalBar</a> sur leur largeur d'orientation, basiquement à 15.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="horizontalBar">horizontalBar</h3>
+        <div>
+            Barre horizontal dans le MScrollArea.</br>
+            Si aucune bar n'est nécessaire, horizontalBar est alors pas <a href="./mwidget.html#visible">visible</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="verticalBar">verticalBar</h3>
+        <div>
+            Barre vertical dans le MScrollArea.</br>
+            Si aucune bar n'est nécessaire, verticalBar est alors pas <a href="./mwidget.html#visible">visible</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="widgetToScroll">widgetToScroll</h3>
+        <div>
+            Widget contenu dans le MScrollArea qui permet le scroll.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+        <h3 id="_widgetToScrollOffset">widgetToScrollOffset</h3>
+        <div>
+            Décalage obligatoire sur <a href="#widgetToScroll">widgetToScroll</a>.</br>
+            Ajouté à la <a href="../versions.html">version</a> 2.0.0.
+        </div>
+    </body>
+</html>
