@@ -1032,7 +1032,7 @@ class MText(MFrame):
         return self.fontSize
     
     def getGenerator(self): #Return the generator of the mtext
-        return pygame.font.SysFont(self.font, self.fontSize)
+        return pygame.font.Font(self.font, self.fontSize)
 
     def getInput(self): #Return input
         return self.input
