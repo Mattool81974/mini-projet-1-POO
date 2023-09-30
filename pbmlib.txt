@@ -1,4 +1,5 @@
 -Ajout de maxFps dans MApp
+-Ajotu d'un système pour transmettre un évènement à un parent
 -Modification de la façon dont est généré la bordure dans MFrame
 -Modification du générateur dans MText qui prend en charge des fichiers .ttf (SysFont -> Font)
 -Trop d'import implicite dans MLib

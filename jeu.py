@@ -9,11 +9,6 @@ largeur = 638
 hauteur = 320
 TAILLE = (largeur, hauteur)
 
-# Chargement des images et de la police de caractères
-fond = 'img/fond.jpg'
-balle = 'img/balle.png'
-font = 'font/elite.ttf'
-
 # Chargement de pygame et mlib
 screen = pygame.display.set_mode(TAILLE)
 mapp = MApp(screen, "Test", TAILLE[0], TAILLE[1], console=False, printFps=True)
@@ -61,84 +56,124 @@ def angleMiroir(angle, axe = "x", rad = True):
 
 	return toReturn
 
+# Retourne la distance entre 2 points
+def distance2D(x1, y1, x2, y2):
+	return sqrt((x2-x1)**2+(y2-y1)**2)
+	
+
 # Création de la classe des balles
 # La classe héritant de MImage, elle affiche la texte de la balle
-class Balle(MImage):
+class Balle:
 	# Chargement des constantes de Balle
 	BALLE_RAYON = 25
-	MINIMUM_Z = 100
-	MAXIMUM_Z = 200
+	Z = 100
 
 	# Constructeur d'une balle (qui prend un attribut x et y, mais aussi z pour calculer sa taille en profondeur)
-	def __init__(self, x, y, z, parent, widgetType="MImage"):
-		self.setZ(z)
+	def __init__(self, rayon, x, y, parent, widgetType="MImage"):
 
-		super().__init__(balle, x, y, Balle.BALLE_RAYON * 2 * self.calculerRetrecissement(), Balle.BALLE_RAYON * 2 * self.calculerRetrecissement(), parent, widgetType)
-		self.setBackgroundColor((0, 0, 0, 0))
-		self.setImageSize((Balle.BALLE_RAYON * 2 * self.calculerRetrecissement(), Balle.BALLE_RAYON * 2 * self.calculerRetrecissement()))
-		self.setImageReframing(4)
+		#Attributs de géométrie (les coordonnées représentent le centre du cercle)
+		self.rayon = rayon
+		self.x = 0
+		self.y = 0
 
+		#Attributs de force
 		self.dessinerForce = False
-		self.force = 10
-		self.forceAngle = 0
+		self.dx = 0
+		self.dy = 0
 
-	# Calculer le retrecissement apparent de l'objet par l'utilisateur
-	def calculerRetrecissement(self):
-		return Balle.MINIMUM_Z/self.getZ()
+		#Charger la texture
+		self.chargerTexture()
+
+		#Bouger la balle et calculer le rétrecissement de la balle par la même occasion
+		self.move(x, y)
 	
-	#Permettre le dessin d'une flèche indiquant l'angle de la force
-	def setDessinerForce(self, dessinerForce):
-		if self.dessinerForce != dessinerForce:
-			self.dessinerForce = dessinerForce
-			self.setShouldModify(True)
+	# Permet de charger la texture de la balle
+	def chargerTexture(self):
+		self.TEXTURE = image.load("img/balle.png").convert_alpha() #Texture cosntance de référence
+		self.texture = image.load("img/balle.png").convert_alpha() #Texture utilisé
+
+	# Retourne l'attribut dx
+	def getDX(self):
+		return self.dx
+	
+	# Retourne l'attribut dy
+	def getDY(self):
+		return self.dy
 	
 	# Retourne la valeur de la force de la balle
 	def getForce(self):
 		return self.force
 	
-	# Retourne la valeur de l'angle (en radian) de la force de la balle (pour comprendre comment fonctionne l'angle, voir angle.png)
-	def getForceAngle(self):
-		return self.forceAngle
+	# Retourne la valeur de l'angle (en radian) de la force de la balle sur les axes x et y (pour comprendre comment fonctionne l'angle, voir angle.png)
+	def getForceAngleXY(self):
+		return self.forceAngleXY
 	
-	# Retourne l'attribut z
-	def getZ(self):
-		return self.z
+	# Retourne la valeur du rayon du cercle
+	def getRayon(self):
+		return self.rayon
 	
-	# Change la valeur de la force de la balle
-	def setForce(self, force):
-		self.force = force
+	# Retourne la texture à utiliser
+	def getTexture(self):
+		return self.texture
 	
-	# Change la valeur de l'angle de la force de la balle
-	def setForceAngle(self, forceAngle):
-		self.forceAngle = normaliserAngle(forceAngle)
-		if self.dessinerForce:
-			self.setShouldModify(True)
+	# Retourne l'attribut x
+	def getX(self):
+		return self.x
 	
-	# Change la valeur de l'attribut z
-	def setZ(self, z):
-		self.z = z
+	# Retourne l'attribut y
+	def getY(self):
+		return self.y
+	
+	# Changer l'attribut x, y et z
+	def move(self, x, y):
+		self.setX(x)
+		self.setY(y)
 
-	# Retourne par combien il faut multiplier la valeur de la force pour obtenir le vecteur vitesse
-	def vecteurMultiplicateur(self):
-		return (cos(self.getForceAngle()), sin(self.getForceAngle()))
+	# Permet de redimensionner la texture selon le rayon et l'attribut z du cercle
+	def redimensionnerTexture(self):
+		if (self.getRayon() * 2) / self.TEXTURE.get_width() != 1:
+			self.texture = transform.scale_by(self.TEXTURE, ((self.getRayon() * 2) / self.TEXTURE.get_width(), (self.getRayon() * 2) / self.TEXTURE.get_height()))
+	
+	# Permettre le dessin d'une flèche indiquant l'angle de la force
+	def setDessinerForce(self, dessinerForce):
+		if self.dessinerForce != dessinerForce:
+			self.dessinerForce = dessinerForce
+			self.setShouldModify(True)
+
+	# Retourne l'attribut dx
+	def setDX(self, dx):
+		self.dx = dx
+	
+	# Retourne l'attribut dy
+	def setDY(self, dy):
+		self.dy = dy
+
+	# Change la valeur de rayon
+	def setRayon(self, rayon):
+		if self.getRayon() != rayon:
+			self.rayon = rayon
+			self.redimensionnerTexture()
+
+	# Change la valeur de l'attribut z
+	def setX(self, x):
+		if self.x != x:
+			self.x = x
+
+	# Change la valeur de l'attribut z
+	def setY(self, y):
+		if self.y != y:
+			self.y = y
+
+	# Vérifie si un cercle rentre en collision avec un autre
+	def touche(self, balle):
+		return distance2D(self.getX(), self.getY(), balle.getX(), balle.getY()) <= self.getRayon() + balle.getRayon()
+	
+	def touchePoint(self, x, y, rayon = 0):
+		return distance2D(self.getX(), self.getY(), x, y) <= self.getRayon() + rayon
 
 	# Retourner le vecteur vitesse de la balle selon la force et son angle
 	def vecteurVitesse(self):
-		vecteurMultiplicateur = self.vecteurMultiplicateur()
-		return (vecteurMultiplicateur[0] * self.getForce(), vecteurMultiplicateur[1] * self.getForce())
-	
-	# Dessine sur la surface de la balle
-	def _renderBeforeHierarchy(self, surface):
-		surface = super()._renderBeforeHierarchy(surface)
-
-		# Si on doit dessiner une ligne sur le widget
-		if self.dessinerForce:
-			vecteurMultiplicateur = self.vecteurMultiplicateur()
-
-			endPos = (round(self.getWidth() / 2) + (vecteurMultiplicateur[0] * round(self.getWidth() / 2)), round(self.getHeight() / 2) + (vecteurMultiplicateur[1] * round(self.getHeight() / 2)))
-			draw.line(surface, (0, 0, 0), (round(self.getWidth() / 2), round(self.getHeight() / 2)), endPos, 2)
-
-		return surface
+		return (self.getDX(), self.getDY())
 
 # Création de la classe du moteur de jeu
 # La classe héritant de MImage, elle affiche l'image de font
@@ -146,74 +181,129 @@ class Game(MImage):
 
 	# Constructeur du moteur de jeu
 	def __init__(self, x, y, parent, widgetType="MImage"):
-		super().__init__(fond, x, y, TAILLE[0], TAILLE[1], parent, widgetType)
+		super().__init__('img/fond.jpg', x, y, TAILLE[0], TAILLE[1], parent, widgetType)
 
+		self.armePosition = (0, 0) #Position de l'arme
+		self.armeTexture = 0 #Surface qui contient la texture de l'arme
+		self.armeType = "glock48" #Type de l'arme utilisé
 		self.balles = [] #Liste qui contient toutes les balles du jeu
+
+		self.chargerArme(self.armeType)
 
 		# Texte qui sera affiché au bas de la fenetre
 		WHITE = pygame.Color(255, 255, 255)
 		text = MText('Projet NSI', 490, 300, 100, 20, self)
 		text.setBackgroundColor((0, 0, 0, 0))
-		text.setFont(font)
+		text.setFont('font/elite.ttf')
 		text.setFontSize(16)
 		text.setTextColor(WHITE)
 		text.setTextVerticalAlignment(1)
 
+	# Charger l'arme à utiliser
+	def chargerArme(self, arme):
+		self.armeType = arme
+		if os.path.exists("img/" + arme + ".png"): #Charger la texture
+			self.armeTexture = image.load("img/" + arme + ".png").convert_alpha()
+		else:
+			self.armeTexture = image.load("img/unknow.png").convert_alpha()
+		self.setShouldModify(True)
+
+	# Retourne si une balle est présente à une position
+	def balleALaPosition(self, x, y, rayon = 0):
+		for i in self.balles:
+			if i.touchePoint(x, y, rayon):
+				return i
+		return 0
+
 	# Créer nombre balle
 	def creerBalle(self, nombre):
-		zS = []
-		for i in range(nombre): # Créer totues les valeurs de x
-			z = random()*(Balle.MAXIMUM_Z - Balle.MINIMUM_Z)+Balle.MINIMUM_Z
-			zS.append(z)
-
-		zS.sort() # Trier les valeurs de x pour permettre de générer les plus grandes en dernières
-		zS = zS[::-1]
-
 		for i in range(nombre):
 			# Coordonnees de la POSITION initiale de la nouvelle balle (générees aléatoirement)
-			angle = pi * 2 * random()
+			angleXY = pi * 2 * random()
 			f = 450 * random() + 50
 			x = random()*(largeur-Balle.BALLE_RAYON)
 			y = random()*(hauteur-Balle.BALLE_RAYON)
-			z = zS[i]
 
-			balle = Balle(x, y, z, self)
-			balle.setForce(f)
-			balle.setForceAngle(angle)
+			while self.balleALaPosition(x, y, 50) != 0:
+				x = random()*(largeur-Balle.BALLE_RAYON)
+				y = random()*(hauteur-Balle.BALLE_RAYON)
+
+			balle = Balle(25, x, y, self)
+			balle.setDX(cos(angleXY) * f)
+			balle.setDY(sin(angleXY) * f)
 			self.balles.append(balle)
+
+	# Retourne la taille de la zone de tir (endroit où sont les balles)
+	#def tailleZoneDeTir(self):
+
+	# Fonction utilisé quand la souris est bougé sur la zone de jeu
+	def _mouseMove(self, buttons, pos, relativeMove):
+		self.armePosition = (round(pos[0] - self.armeTexture.get_width() / 2), round(pos[1] - self.armeTexture.get_height() / 2))
+
+	# Dessine sur la surface de jeu
+	def _renderBeforeHierarchy(self, surface):
+		surface = super()._renderBeforeHierarchy(surface)
+
+		#Dessiner les balles
+		for i in self.balles:
+			surfaceABlit = i.getTexture()
+
+			surface.blit(surfaceABlit, (i.getX(), i.getY(), surfaceABlit.get_width(), surfaceABlit.get_height()))
+
+		#Dessiner l'arme
+		surface.blit(self.armeTexture, (self.armePosition[0], self.armePosition[1], self.armeTexture.get_width(), self.armeTexture.get_height()))
+
+		return surface
 
 	# Fonction appelée à chaque frames par mapp avec deltaTime le temps qu'a duré la dernière frame
 	def _update(self, deltaTime):
-		for i in self.balles:
-			nouveauX = i.getX()
-			nouveauY = i.getY()
-			vecteurVitesse = i.vecteurVitesse()
+		for index in range(len(self.balles)):
+			i = self.balles[index]
 
-			# On calcule les nouvelles positions de chaques balles
-			nouveauX += vecteurVitesse[0] * deltaTime
-			nouveauY += vecteurVitesse[1] * deltaTime
+			ancienX = i.getX()
+			ancienY = i.getY()
+
+			nouveauX = ancienX + i.getDX() * deltaTime
+			nouveauY = ancienY + i.getDY() * deltaTime
+
+			i.move(nouveauX, nouveauY)
+
+			# On calcule les collisions avec les autres joueurs
+			for j in self.balles[index + 1:]:
+				if i.touche(j):
+					i.move(ancienX, ancienY)
+					nouveauX = ancienX
+					nouveauY = ancienY
+
+					i.setDX(-i.getDX())
+					i.setDY(-i.getDY())
+
+					j.setDX(-j.getDX())
+					j.setDY(-j.getDY())
 
 			# On prend en compte les rebonds avec le bord
 			if nouveauX < 0:
 				nouveauX = 0
-				i.setForceAngle(angleMiroir(i.getForceAngle(), "y"))
-			elif nouveauX > self.getWidth() - i.getImageSize()[0]:
-				nouveauX = self.getWidth() - i.getImageSize()[0]
-				i.setForceAngle(angleMiroir(i.getForceAngle(), "y"))
+				i.setDX(-i.getDX())
+			elif nouveauX > self.getWidth() - i.getTexture().get_width():
+				nouveauX = self.getWidth() - i.getTexture().get_width()
+				i.setDX(-i.getDX())
 
 			if nouveauY < 0:
 				nouveauY = 0
-				i.setForceAngle(angleMiroir(i.getForceAngle(), "x"))
-			elif nouveauY > self.getHeight() - i.getImageSize()[1]:
-				nouveauY = self.getHeight() - i.getImageSize()[1]
-				i.setForceAngle(angleMiroir(i.getForceAngle(), "x"))
+				i.setDY(-i.getDY())
+			elif nouveauY > self.getHeight() - i.getTexture().get_height():
+				nouveauY = self.getHeight() - i.getTexture().get_height()
+				i.setDY(-i.getDY())
 
 			i.move(nouveauX, nouveauY)
+
+		self.setShouldModify(True)
 
 
 # Chargement du moteur de jeu
 moteurDeJeu = Game(0, 0, mapp)
-moteurDeJeu.creerBalle(50)
+moteurDeJeu.creerBalle(25)
 
 #  --------------------------------------------------------------------------
 #      Boucle exécutée tant que MLib ne reçoit pas d'event "pygame.QUIT"
