@@ -18,6 +18,7 @@ class MWidget:
         self.cursorOnOverflight = pygame.SYSTEM_CURSOR_ARROW
         self.focused = False
         self.height = height
+        self.ignoreClick = False
         self.mouseDown = []
         self.mouseUp = []
         self.overflighted = False
@@ -382,7 +383,7 @@ class MApp(MWidget):
         i = 0
         while i < len(overflightedWidget.getChildren()): #Find the overflighted widget
             widget = overflightedWidget.getChildrenAtIndex(-(i + 1))
-            if widget.posIn(mousePos):
+            if widget.posIn(mousePos) and not widget.ignoreClick:
                 overflightedWidget = widget
                 i = -1
             i += 1
