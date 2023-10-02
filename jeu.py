@@ -233,7 +233,9 @@ class Game(MImage):
 		super().__init__('img/fond.jpg', x, y, TAILLE[0], TAILLE[1], parent, widgetType)
 
 		# Configurer l'arme utilisé
+		self.armeChargeur = 0 #Taille du chargeur de l'arme
 		self.armePosition = (0, 0) #Position de l'arme
+		self.armeTempsDeRechargement = 0 #Temps de rechargement de l'arme
 		self.armeTexture = 0 #Surface qui contient la texture de l'arme
 		self.armeType = "glock48" #Type de l'arme utilisé
 		self.munitionTexture = 0 #Surface qui contient la texture d'une munition de l'arme
@@ -242,9 +244,16 @@ class Game(MImage):
 
 		self.balles = [] #Liste qui contient toutes les balles du jeu
 
-		self.chargerArme(self.armeType)
-
-		self.setBackgroundColor((255, 178, 102))
+		# Texte qui affichera la capacité du chargeur
+		WHITE = pygame.Color(255, 255, 255)
+		text = MText('0/0', 0, 300, 100, 20, self)
+		text.setBackgroundColor((0, 0, 0, 0))
+		text.setFont('font/elite.ttf')
+		text.setFontSize(16)
+		text.setTextColor(WHITE)
+		text.setTextVerticalAlignment(1)
+		text.ignoreClick = True
+		self.armeChargeurTexte = text
 
 		# Texte qui sera affiché au bas de la fenetre
 		WHITE = pygame.Color(255, 255, 255)
@@ -255,6 +264,10 @@ class Game(MImage):
 		text.setTextColor(WHITE)
 		text.setTextVerticalAlignment(1)
 		text.ignoreClick = True
+  
+		self.chargerArme(self.armeType)
+
+		self.setBackgroundColor((255, 178, 102))
 
 	# Retourne si une balle est présente à une position
 	def balleALaPosition(self, x, y, rayon = 0):
@@ -267,9 +280,16 @@ class Game(MImage):
 	def chargerArme(self, arme):
 		self.armeType = arme
 		if self.armeType == "glock48": #Si l'arme est un glock 48
+			self.armeChargeur = 16 #Charger la taille du chargeur de l'arme
+			self.armeChargeurRestant = 16 #Nombre de munitions restantes dans le chargeur
+			self.armeTempsDeRechargement = 4 #Temps de rechargement de l'arme
 			self.armeTexture = image.load("img/glock48.png").convert_alpha() #Charger la texture de l'arme
 			self.munitionTexture = image.load("img/glock48Munition.png").convert_alpha() #Charger la texture d'une munition
 			self.munitionVitesse = 2000 #Charger la vitesse d'une munition
+			self.rechargeDebut = 0
+			self.seRecharge = False
+   
+			self.armeChargeurTexte.setText("16/16")
 
 		self.setShouldModify(True)
 
@@ -311,7 +331,6 @@ class Game(MImage):
 
 			i.move(nouveauX, nouveauY)
 
-
 			if self.getCalculerCollision(): #Si on calcule les collisions (pour l'instant pas optionnel)
 				# On calcule les collisions (élastique) avec les autres balles
 				for j in self.balles[index + 1:]:
@@ -336,15 +355,20 @@ class Game(MImage):
 								if ratioV == 0: ratioV = 0.0000001
 								v = (v[0] * (ratioManquant * (1 / ratioV)), v[1] * (ratioManquant * ratioV))
 
+						n = ((j.getDX() - i.getDX())/distance2D(i.getDX(), i.getDY(), j.getDX(), j.getDY()), (j.getDY() - i.getDY())/distance2D(i.getDX(), i.getDY(), j.getDX(), j.getDY()))
+						n = (1,1)					
 						v1 = (j.getMasse()/(i.getMasse()+j.getMasse())*v[0], j.getMasse()/(i.getMasse()+j.getMasse())*v[1])
 						v2 = ((-j.getMasse())/(i.getMasse()+j.getMasse())*v[0], (-j.getMasse())/(i.getMasse()+j.getMasse())*v[1])
 
 						# Mise à jour des vitesses des 2 balles
-						i.setDX(v1[0])
-						i.setDY(v1[1])
+						i.setDX(v1[0] * n[0])
+						i.setDY(v1[1] * n[1])
 
-						j.setDX(v2[0])
-						j.setDY(v2[1])
+						j.setDX(v2[0] * n[0])
+						j.setDY(v2[1] * n[1])
+      
+						nouveauX += i.getDX() * deltaTime
+						nouveauY += i.getDY() * deltaTime
 
 			# On prend en compte les rebonds avec le bord
 			if nouveauX < self.rectFenetreDeJeu()[0]:
@@ -383,20 +407,36 @@ class Game(MImage):
 	# Retourne si les collisiosn entre balles sont comptées ou pas
 	def getCalculerCollision(self):
 		return False
+
+	# Permet de recharger le chargeur de l'arme
+	def rechargerArme(self):
+		if self.armeChargeurRestant < self.armeChargeur and not self.seRecharge:
+			self.rechargeDebut = time_ns()
+			self.seRecharge = True
 	
 	# Retourne les coordonée/taille de la fenêtre de jeu
 	def rectFenetreDeJeu(self):
 		return (0, 0, self.getWidth(), self.imageSize[1])
 
+	# Tire avec l'arme
+	def tirer(self, relativePos):
+		if self.armeChargeurRestant > 0 and not self.seRecharge:
+			self.armeChargeurRestant -= 1
+			self.munitionTirees.append({"pos": (relativePos[0], relativePos[1]), "profondeur": 1, "vitesse": self.munitionVitesse})
+
+			self.armeChargeurTexte.setText(str(self.armeChargeurRestant) + "/" + str(self.armeChargeur))
+
 	# Fonction appelé lorsqu'une touche du clavier est pressée
 	def _isKeyGettingPressed(self, key):
 		if key == pygame.K_RIGHT:
 			self.framePhysique(0.01)
+		elif key == pygame.K_r:
+			self.rechargerArme()
 
 	# Fonction appelée lorsqu'une touche de la souris est clické
 	def _isGettingMouseDown(self, button, relativePos):
 		if button == 1: #Si la touche gauche de la souris est clické
-			self.munitionTirees.append({"pos": (relativePos[0], relativePos[1]), "profondeur": 1, "vitesse": self.munitionVitesse})
+			self.tirer(relativePos)
 
 	# Fonction utilisé quand la souris est bougé sur la zone de jeu
 	def _mouseMove(self, buttons, pos, relativeMove):
@@ -435,6 +475,12 @@ class Game(MImage):
 	def _update(self, deltaTime):
 		self.framePhysique(deltaTime)
 
+		if self.seRecharge:
+			if ((time_ns() - self.rechargeDebut)/10**9) >= self.armeTempsDeRechargement:
+				self.armeChargeurRestant = self.armeChargeur
+				self.rechargeDebut = 0
+				self.seRecharge = False
+				self.armeChargeurTexte.setText(str(self.armeChargeurRestant) + "/" + str(self.armeChargeur))
 
 # Chargement du moteur de jeu
 moteurDeJeu = Game(0, 0, mapp)
