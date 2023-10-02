@@ -383,7 +383,7 @@ class MApp(MWidget):
         i = 0
         while i < len(overflightedWidget.getChildren()): #Find the overflighted widget
             widget = overflightedWidget.getChildrenAtIndex(-(i + 1))
-            if widget.posIn(mousePos) and not widget.ignoreClick:
+            if widget.posIn(mousePos) and not widget.ignoreClick and widget.getVisible():
                 overflightedWidget = widget
                 i = -1
             i += 1
@@ -404,12 +404,7 @@ class MApp(MWidget):
             elif event.type == pygame.MOUSEBUTTONDOWN: #If the mouse is clicked
                 if overflightedWidget.mouseDown.count(event.button) == 0: overflightedWidget.mouseDown.append(event.button)
                 if self.focusedWidget != overflightedWidget:
-                    self.focusedWidget.focused = False
-                    if self.getConsole():
-                        self.writeConsole("Widget not focused anymore", indentation = 0, writer = self.focusedWidget)
-                    self.focusedWidget._isNotFocusedAnymore()
-                    self.focusedWidget = overflightedWidget
-                    self.focusedWidget.focused = True
+                    self.setFocusedWidget(overflightedWidget)
                 if self.getConsole():
                     self.writeConsole("Mouse clicked", indentation = 0, writer = self.focusedWidget)
                 overflightedWidget._isGettingMouseDown(event.button, (event.pos[0] - overflightedWidget.absoluteX(), event.pos[1] - overflightedWidget.absoluteY()))
@@ -498,6 +493,14 @@ class MApp(MWidget):
             f = open(self.consoleFile, "w")
             f.write("")
             f.close()
+
+    def setFocusedWidget(self, widget):
+        self.focusedWidget.focused = False
+        if self.getConsole():
+            self.writeConsole("Widget not focused anymore", indentation = 0, writer = self.focusedWidget)
+        self.focusedWidget._isNotFocusedAnymore()
+        self.focusedWidget = widget
+        self.focusedWidget.focused = True
 
     def setPrintFps(self, printFps): #Change the value of printFps
         self.printFps = printFps
@@ -1033,7 +1036,9 @@ class MText(MFrame):
         return self.fontSize
     
     def getGenerator(self): #Return the generator of the mtext
-        return pygame.font.Font(self.font, self.fontSize)
+        if self.getFont() == 'font/elite.ttf':
+            return pygame.font.Font(self.font, self.fontSize)
+        return pygame.font.SysFont(self.font, self.fontSize)
 
     def getInput(self): #Return input
         return self.input

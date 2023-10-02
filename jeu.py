@@ -11,7 +11,7 @@ TAILLE = (largeur, hauteur)
 
 # Chargement de pygame et mlib
 screen = pygame.display.set_mode(TAILLE)
-mapp = MApp(screen, "Test", TAILLE[0], TAILLE[1], console=False, printFps=True)
+mapp = MApp(screen, "Jeu", TAILLE[0], TAILLE[1], console=False, printFps=True)
 
 #Permet de normaliser un angle radian ou non
 def normaliserAngle(angle, rad = True):
@@ -61,7 +61,6 @@ def distance2D(x1, y1, x2, y2):
 	return sqrt((x2-x1)**2+(y2-y1)**2)
 
 # Création de la classe des balles
-# La classe héritant de MImage, elle affiche la texte de la balle
 class Balle:
 	# Chargement des constantes de Balle
 	BALLE_RAYON = 25
@@ -224,6 +223,70 @@ class Balle:
 			if not self.touche(i):
 				self.collisions.remove(i)
 
+# Création de la classe de l'arme
+class Arme:
+
+	# Constructeur d'un objet arme
+	def __init__(self, chargeur, tempsDeRechargement, texture, type, munitionTexture, munitionVitesse) -> None:
+		self.chargeur = chargeur #Nombre de munitions possible dans le chargeur
+		self.chargeurRestant = chargeur #Nombre du munitions restantes dans le chargeur
+		self.debutRechargement = 0 #Temps où l'arme à commencer à se recharger
+		self.munitionTexture = munitionTexture #Texture d'une munition de l'arme
+		self.munitionVitesse = munitionVitesse #Vitesse d'une munition del'arme
+		self.seRecharge = False #Booléen qui indique si l'arme est en plein rechargement ou pas
+		self.tempsDeRechargement = tempsDeRechargement #Temps de rechargement de l'arme
+		self.texture = texture #Texture de l'arme
+		self.type = type #Type de l'arme
+
+	# Charge l'arme
+	def debuterChargement(self):
+		if self.getChargeurRestant() < self.getChargeur() and not self.enChargement():
+			self.debutRechargement = time_ns()
+			self.seRecharge = True
+
+	# Retourne si l'arme est en plein rechargement ou pas
+	def enChargement(self): return self.seRecharge
+
+	# Finir (ou pas) le chargement de l'arme
+	def finirChargement(self):
+		if (time_ns() - self.debutRechargement)/(10**9) >= self.getTempsDeChargement():
+			self.chargeurRestant = self.chargeur
+			self.debutRechargement = 0
+			self.seRecharge = False
+			return True
+		return False
+
+	# Retourne la valeur de chargeur
+	def getChargeur(self): return self.chargeur
+
+	# Retourne la valeur de chargeurRestant
+	def getChargeurRestant(self): return self.chargeurRestant
+
+	# Retourne la texture de la munition
+	def getMunitionTexture(self): return self.munitionTexture
+
+	# Retourne munitionVitesse
+	def getMunitionVitesse(self): return self.munitionVitesse
+
+	# Retourne tempsDeRechargement
+	def getTempsDeChargement(self): return self.tempsDeRechargement
+
+	# Retourne texture
+	def getTexture(self): return self.texture
+
+	# Reset l'arme
+	def reset(self):
+		self.chargeurRestant = self.chargeur
+		self.debutRechargement = 0
+		self.seRecharge = False
+
+	# Tire avec l'arme
+	def tirer(self):
+		if self.getChargeurRestant() > 0:
+			self.chargeurRestant -= 1
+			return True
+		return False
+
 # Création de la classe du moteur de jeu
 # La classe héritant de MImage, elle affiche l'image de font
 class Game(MImage):
@@ -232,17 +295,23 @@ class Game(MImage):
 	def __init__(self, x, y, parent, widgetType="MImage"):
 		super().__init__('img/fond.jpg', x, y, TAILLE[0], TAILLE[1], parent, widgetType)
 
-		# Configurer l'arme utilisé
-		self.armeChargeur = 0 #Taille du chargeur de l'arme
-		self.armePosition = (0, 0) #Position de l'arme
-		self.armeTempsDeRechargement = 0 #Temps de rechargement de l'arme
-		self.armeTexture = 0 #Surface qui contient la texture de l'arme
-		self.armeType = "glock48" #Type de l'arme utilisé
-		self.munitionTexture = 0 #Surface qui contient la texture d'une munition de l'arme
-		self.munitionTirees = [] #Liste de données sur les munitions tirées
-		self.munitionVitesse = 0
+		self.armes = {} #Dictionnaire qui contient tous les types d'armes
+		self.armeActuel = 0 #Contient l'arme actuelle
+		self.armePosition = (0, 0) #Position de l'arme dans la fenêtre
+		self.creerArme() #Créer tous les objets armes
+		self.croixDeVisee = True #Booléen qui indique si une croix de visée est affichée ou non
+		self.munitionTirees = [] #Liste des propriétés des munitions tirées
+		self.nbTir = 0 #Nombre de tir total
+		self.nbTirReussie = 0 #Nombre de tir réussie
 
 		self.balles = [] #Liste qui contient toutes les balles du jeu
+		self.nbBalleDetruite = 0 #Nombre de balles détruites
+
+		self.calculerCollision = False #Booléen qui indique si on calcule les collisions ou non
+
+		self.fini = False #Booléen qui indique si le jeu est fini
+		self.timecodeDebut = time_ns() #Temps au début du jeu
+		self.timecodeFin = -1 #Temps à la fin du jeu, ou -1 si le jeu n'est pas fini
 
 		# Texte qui affichera la capacité du chargeur
 		WHITE = pygame.Color(255, 255, 255)
@@ -255,7 +324,19 @@ class Game(MImage):
 		text.ignoreClick = True
 		self.armeChargeurTexte = text
 
-		# Texte qui sera affiché au bas de la fenetre
+		# Chronomètre qui sera affiché en haut à gauche de la fenêtre
+		WHITE = pygame.Color(255, 255, 255)
+		text = MText('0.0', 0, 0, 100, 20, self)
+		text.setBackgroundColor((0, 0, 0, 0))
+		#text.setFont('font/elite.ttf')
+		text.setFontSize(22)
+		text.setTextColor(WHITE)
+		text.setTextHorizontalAlignment(1)
+		text.setTextVerticalAlignment(1)
+		text.ignoreClick = True
+		self.chronometre = text
+
+		# Texte qui sera affiché en bas à droite de la fenêtre
 		WHITE = pygame.Color(255, 255, 255)
 		text = MText('Projet NSI', 490, 300, 100, 20, self)
 		text.setBackgroundColor((0, 0, 0, 0))
@@ -264,8 +345,9 @@ class Game(MImage):
 		text.setTextColor(WHITE)
 		text.setTextVerticalAlignment(1)
 		text.ignoreClick = True
+		self.textePub = text
   
-		self.chargerArme(self.armeType)
+		self.chargerArme("glock48")
 
 		self.setBackgroundColor((255, 178, 102))
 
@@ -275,23 +357,28 @@ class Game(MImage):
 			if i.touchePoint(x, y, rayon):
 				return i
 		return 0
+	
+	# Change le texte du chargeur (en bas à gauche)
+	def changerArmeChargeurTexte(self):
+		aSupprimer = 255 * (self.armeActuel.getChargeurRestant() / self.armeActuel.getChargeur()) #Valeur à supprimer pour tendre vers le rouge
+		self.armeChargeurTexte.setTextColor((255, aSupprimer, aSupprimer))
+		self.armeChargeurTexte.setText(str(self.armeActuel.getChargeurRestant()) + "/" + str(self.armeActuel.getChargeur()))
 
 	# Charger l'arme à utiliser
 	def chargerArme(self, arme):
-		self.armeType = arme
-		if self.armeType == "glock48": #Si l'arme est un glock 48
-			self.armeChargeur = 16 #Charger la taille du chargeur de l'arme
-			self.armeChargeurRestant = 16 #Nombre de munitions restantes dans le chargeur
-			self.armeTempsDeRechargement = 4 #Temps de rechargement de l'arme
-			self.armeTexture = image.load("img/glock48.png").convert_alpha() #Charger la texture de l'arme
-			self.munitionTexture = image.load("img/glock48Munition.png").convert_alpha() #Charger la texture d'une munition
-			self.munitionVitesse = 2000 #Charger la vitesse d'une munition
-			self.rechargeDebut = 0
-			self.seRecharge = False
-   
-			self.armeChargeurTexte.setText("16/16")
+		if self.armeActuel != 0: #Reset l'ancienne arme
+			self.armeActuel.reset()
+
+		self.armeActuel = self.armes[arme]
+		self.changerArmeChargeurTexte()
 
 		self.setShouldModify(True)
+
+	# Créer toutes les armes built-in
+	def creerArme(self):
+		glock48 = Arme(16, 4, image.load("img/glock48.png").convert_alpha(), "glock48", image.load("img/glock48Munition.png").convert_alpha(), 2000) #Création du glock48
+
+		self.armes["glock48"] = glock48
 
 	# Créer nombre balle
 	def creerBalle(self, nombre):
@@ -310,6 +397,15 @@ class Game(MImage):
 			balle.setDX(fx)
 			balle.setDY(fy)
 			self.balles.append(balle)
+
+	# Retourne les données de fin de jeu
+	def donneesFinDeJeu(self):
+		return {"nbBalleDetruite": self.nbBalleDetruite, "temps": (self.timecodeFin - self.timecodeDebut) / 10 ** 9, "nbTir": self.nbTir, "nbTirReussie": self.nbTirReussie}
+
+	# Fini le jeu
+	def fin(self):
+		self.fini = True
+		self.timecodeFin = time_ns()
 
 	# Simule une frame physique
 	def framePhysique(self, deltaTime):
@@ -331,12 +427,12 @@ class Game(MImage):
 
 			i.move(nouveauX, nouveauY)
 
-			if self.getCalculerCollision(): #Si on calcule les collisions (pour l'instant pas optionnel)
-				# On calcule les collisions (élastique) avec les autres balles
+			if self.getCalculerCollision(): #Si on calcule les collisions (pas optimal)
+				#On calcule les collisions (élastique) avec les autres balles
 				for j in self.balles[index + 1:]:
 					i.verifierCollisions()
 					if i.touche(j) and not i.estEnCollisionAvec(j): #Si il y a collision et qu'elle n'as pas été encore traitée
-						i.rajouterCollision(j) #On signala à la balle qu'une collision est en train d'avoir lieu
+						i.rajouterCollision(j) #On signale à la balle qu'une collision est en train d'avoir lieu
 						j.rajouterCollision(i)
 
 						#Calcul de l'énergie final
@@ -355,17 +451,15 @@ class Game(MImage):
 								if ratioV == 0: ratioV = 0.0000001
 								v = (v[0] * (ratioManquant * (1 / ratioV)), v[1] * (ratioManquant * ratioV))
 
-						n = ((j.getDX() - i.getDX())/distance2D(i.getDX(), i.getDY(), j.getDX(), j.getDY()), (j.getDY() - i.getDY())/distance2D(i.getDX(), i.getDY(), j.getDX(), j.getDY()))
-						n = (1,1)					
 						v1 = (j.getMasse()/(i.getMasse()+j.getMasse())*v[0], j.getMasse()/(i.getMasse()+j.getMasse())*v[1])
 						v2 = ((-j.getMasse())/(i.getMasse()+j.getMasse())*v[0], (-j.getMasse())/(i.getMasse()+j.getMasse())*v[1])
 
 						# Mise à jour des vitesses des 2 balles
-						i.setDX(v1[0] * n[0])
-						i.setDY(v1[1] * n[1])
+						i.setDX(v1[0])
+						i.setDY(v1[1])
 
-						j.setDX(v2[0] * n[0])
-						j.setDY(v2[1] * n[1])
+						j.setDX(v2[0])
+						j.setDY(v2[1])
       
 						nouveauX += i.getDX() * deltaTime
 						nouveauY += i.getDY() * deltaTime
@@ -390,57 +484,71 @@ class Game(MImage):
 		i, j = 0, 0
 		while i < len(self.balles): #Vérifier si une balle touche une munition
 			while j < len(self.munitionTirees):
-				xMunition = self.munitionTirees[j]["pos"][0] + self.armeTexture.get_width() / 2
-				yMunition = self.munitionTirees[j]["pos"][1] - (self.armeTexture.get_height() / 2 + 10)
+				xMunition = self.munitionTirees[j]["pos"][0] + self.armeActuel.getTexture().get_width() / 2
+				yMunition = self.munitionTirees[j]["pos"][1] - (self.armeActuel.getTexture().get_height() / 2 + 10)
 
-				if distance2D(self.balles[i].getX() + self.balles[i].getRayon(), self.balles[i].getY() + self.balles[i].getRayon(), xMunition, yMunition) <= self.balles[i].getRayon():
-					self.balles.remove(self.balles[i])
-					self.munitionTirees.remove(self.munitionTirees[j])
-					i -= 1
-					j -= 1
+				if self.munitionTirees[j]["profondeur"] >= 100: #Si la balle est assez éloignée
+					if distance2D(self.balles[i].getX() + self.balles[i].getRayon(), self.balles[i].getY() + self.balles[i].getRayon(), xMunition, yMunition) <= self.balles[i].getRayon():
+						self.balles.remove(self.balles[i])
+						self.munitionTirees.remove(self.munitionTirees[j])
+						self.nbBalleDetruite += 1
+						self.nbTirReussie += 1
+						i -= 1
+						j -= 1
 				j += 1
 			i += 1
 			j = 0
 
 		self.setShouldModify(True)
 
-	# Retourne si les collisiosn entre balles sont comptées ou pas
+	# Retourne si les collisions entre balles sont comptées ou pas
 	def getCalculerCollision(self):
-		return False
-
-	# Permet de recharger le chargeur de l'arme
-	def rechargerArme(self):
-		if self.armeChargeurRestant < self.armeChargeur and not self.seRecharge:
-			self.rechargeDebut = time_ns()
-			self.seRecharge = True
+		return self.calculerCollision
+	
+	# Retourne croixDeVisee
+	def getCroixDeVisee(self): return self.croixDeVisee
 	
 	# Retourne les coordonée/taille de la fenêtre de jeu
 	def rectFenetreDeJeu(self):
 		return (0, 0, self.getWidth(), self.imageSize[1])
 
+	# Change la valeur de croixDeVisee
+	def setCroixDeVisee(self, croixDeVisee):
+		self.croixDeVisee = croixDeVisee
+
+	# Retourne le temps depuis qu'il n'y a plus de balles dans le jeu
+	def tempsDepuisFin(self):
+		if len(self.balles) == 0:
+			if self.timecodeFin != -1:
+				return (time_ns() - self.timecodeFin) / 10 ** 9
+			else:
+				self.fin()
+				return 0
+		else: return -1 #Si il y a encore des balles, retourne -1
+
 	# Tire avec l'arme
 	def tirer(self, relativePos):
-		if self.armeChargeurRestant > 0 and not self.seRecharge:
-			self.armeChargeurRestant -= 1
-			self.munitionTirees.append({"pos": (relativePos[0], relativePos[1]), "profondeur": 1, "vitesse": self.munitionVitesse})
+		if self.armeActuel.tirer():
+			self.munitionTirees.append({"pos": (relativePos[0], relativePos[1]), "profondeur": 1, "vitesse": self.armeActuel.getMunitionVitesse()})
+			self.nbTir += 1
 
-			self.armeChargeurTexte.setText(str(self.armeChargeurRestant) + "/" + str(self.armeChargeur))
+			self.changerArmeChargeurTexte()
 
 	# Fonction appelé lorsqu'une touche du clavier est pressée
 	def _isKeyGettingPressed(self, key):
 		if key == pygame.K_RIGHT:
 			self.framePhysique(0.01)
-		elif key == pygame.K_r:
-			self.rechargerArme()
+		elif key == pygame.K_r and not self.fini:
+			self.armeActuel.debuterChargement()
 
 	# Fonction appelée lorsqu'une touche de la souris est clické
 	def _isGettingMouseDown(self, button, relativePos):
-		if button == 1: #Si la touche gauche de la souris est clické
+		if button == 1 and not self.fini: #Si la touche gauche de la souris est clické
 			self.tirer(relativePos)
 
 	# Fonction utilisé quand la souris est bougé sur la zone de jeu
 	def _mouseMove(self, buttons, pos, relativeMove):
-		self.armePosition = (round(pos[0] - self.armeTexture.get_width() / 2), round(pos[1] - self.armeTexture.get_height() / 2))
+		self.armePosition = (round(pos[0] - self.armeActuel.getTexture().get_width() / 2), round(pos[1] - self.armeActuel.getTexture().get_height() / 2))
 
 	# Dessine sur la surface de jeu
 	def _renderBeforeHierarchy(self, surface):
@@ -454,7 +562,7 @@ class Game(MImage):
 
 		#Dessiner les munitions
 		for i in self.munitionTirees:
-			surfaceABlit = self.munitionTexture
+			surfaceABlit = self.armeActuel.getMunitionTexture()
 			coefficientRetrecissement = (200 - i["profondeur"])/200
 			if coefficientRetrecissement < 0: coefficientRetrecissement = 0
 
@@ -462,42 +570,201 @@ class Game(MImage):
 				surfaceABlit = transform.scale_by(surfaceABlit, (coefficientRetrecissement, coefficientRetrecissement))
 
 			if coefficientRetrecissement != 0:
-				xMunition = i["pos"][0] - self.armeTexture.get_width() / 2 + (self.armeTexture.get_width() - surfaceABlit.get_width()) / 2
-				yMunition = i["pos"][1] - self.armeTexture.get_height() / 2 - 10
+				xMunition = i["pos"][0] - self.armeActuel.getTexture().get_width() / 2 + (self.armeActuel.getTexture().get_width() - surfaceABlit.get_width()) / 2
+				yMunition = i["pos"][1] - self.armeActuel.getTexture().get_height() / 2 - 10
 				surface.blit(surfaceABlit, (xMunition, yMunition, surfaceABlit.get_width(), surfaceABlit.get_height()))
 
+		#Dessiner la croix de visée
+		if self.getCroixDeVisee():
+			croixLargeur = 2
+			croixLongeur = 15
+			#Ligne horizontal
+			draw.line(surface, (255, 255, 255), ((self.armePosition[0] + self.armeActuel.getTexture().get_width() / 2 - croixLongeur), (self.armePosition[1] - croixLongeur/4)), ((self.armePosition[0] + self.armeActuel.getTexture().get_width() / 2 + croixLongeur), (self.armePosition[1] - croixLongeur/4)), croixLargeur)
+			#Ligne vertical
+			draw.line(surface, (255, 255, 255), ((self.armePosition[0] + self.armeActuel.getTexture().get_width() / 2), (self.armePosition[1]) + croixLongeur/4), ((self.armePosition[0] + self.armeActuel.getTexture().get_width() / 2), (self.armePosition[1] - (5/4)*croixLongeur)), croixLargeur)
+
 		#Dessiner l'arme
-		surface.blit(self.armeTexture, (self.armePosition[0], self.armePosition[1], self.armeTexture.get_width(), self.armeTexture.get_height()))
+		surface.blit(self.armeActuel.getTexture(), (self.armePosition[0], self.armePosition[1], self.armeActuel.getTexture().get_width(), self.armeActuel.getTexture().get_height()))
 
 		return surface
 
 	# Fonction appelée à chaque frames par mapp avec deltaTime le temps qu'a duré la dernière frame
 	def _update(self, deltaTime):
+		if not self.fini:
+			secondes = (time_ns() - self.timecodeDebut)/10**9 #Gérer le chronomètre
+			minute = 0
+			while secondes > 60:
+				secondes -= 60
+				minute += 1
+			chrono = str(round(secondes, 2)) #Texte du chronomètre
+			if minute != 0: chrono = str(round(minute)) + ":" + str(round(secondes, 2))
+			self.chronometre.setText(chrono)
+
 		self.framePhysique(deltaTime)
 
-		if self.seRecharge:
-			if ((time_ns() - self.rechargeDebut)/10**9) >= self.armeTempsDeRechargement:
-				self.armeChargeurRestant = self.armeChargeur
-				self.rechargeDebut = 0
-				self.seRecharge = False
-				self.armeChargeurTexte.setText(str(self.armeChargeurRestant) + "/" + str(self.armeChargeur))
+		if self.armeActuel.enChargement():
+			if self.armeActuel.finirChargement():
+				self.changerArmeChargeurTexte()
 
-# Chargement du moteur de jeu
-moteurDeJeu = Game(0, 0, mapp)
-moteurDeJeu.creerBalle(25)
+# Création de la partie graphique de la page d'accueil
+accueil = MWidget(0, 0, TAILLE[0], TAILLE[1], mapp)
+titreAccueil = MText("Jeu", 200, 20, TAILLE[0] - 400, 150, accueil)
+boutonJouerAccueil = MButton("Jouer", 50, TAILLE[1] - 100, 200, 70, accueil)
+
+# Création de la partie graphique de la page de fin
+fin = MWidget(0, 0, TAILLE[0], TAILLE[1], mapp)
+titreFin = MText("Fin du jeu", 100, 20, TAILLE[0] - 200, 100, fin)
+boutonRejouerFin = MButton("Rejouer", 50, TAILLE[1] - 100, 200, 70, fin)
+boutonQuitterFin = MButton("Quitter", TAILLE[0] - 250, TAILLE[1] - 100, 200, 70, fin)
+texteBalleDetruiteFin = MText("Balle(s) détruite(s) : 0", 20, 130, 200, 20, fin)
+texteTirFin = MText("Tir(s) : 0", TAILLE[0] - 220, 130, 200, 20, fin)
+texteTirReussieFin = MText("Tir(s) réussi(s) : 0%", 20, 160, 200, 20, fin)
+texteTempsFin = MText("0.0 s", TAILLE[0] - 220, 160, 200, 20, fin)
+
+# Modification des éléments graphiques (voir documentation mlib documentation.html)
+accueil.setBackgroundColor((102, 102, 255))
+accueil.setVisible(False)
+
+titreAccueil.setAntiAnaliasing(True)
+titreAccueil.setBackgroundColor((255, 255, 255, 30))
+titreAccueil.setCornerRadius(25)
+titreAccueil.setFontSize(75)
+titreAccueil.setFrameWidth(3)
+titreAccueil.setTextHorizontalAlignment(1)
+titreAccueil.setTextVerticalAlignment(1)
+
+boutonJouerAccueil.setAntiAnaliasing(True)
+boutonJouerAccueil.setChangeFontSizeOnOnOverflight(True)
+boutonJouerAccueil.setCornerRadius(25)
+boutonJouerAccueil.setFontSize(35)
+boutonJouerAccueil.setFontSizeOnOverflight(45)
+
+fin.setBackgroundColor((102, 102, 255))
+fin.setVisible(False)
+
+titreFin.setAntiAnaliasing(True)
+titreFin.setBackgroundColor((255, 255, 255, 30))
+titreFin.setCornerRadius(25)
+titreFin.setFontSize(75)
+titreFin.setFrameWidth(3)
+titreFin.setTextHorizontalAlignment(1)
+titreFin.setTextVerticalAlignment(1)
+
+boutonRejouerFin.setAntiAnaliasing(True)
+boutonRejouerFin.setChangeFontSizeOnOnOverflight(True)
+boutonRejouerFin.setCornerRadius(25)
+boutonRejouerFin.setFontSize(35)
+boutonRejouerFin.setFontSizeOnOverflight(45)
+
+boutonQuitterFin.setAntiAnaliasing(True)
+boutonQuitterFin.setChangeFontSizeOnOnOverflight(True)
+boutonQuitterFin.setCornerRadius(25)
+boutonQuitterFin.setFontSize(35)
+boutonQuitterFin.setFontSizeOnOverflight(45)
+
+texteBalleDetruiteFin.setBackgroundColor((0, 0, 0, 0))
+texteBalleDetruiteFin.setTextVerticalAlignment(1)
+texteBalleDetruiteFin.setFontSize(22)
+
+texteTirFin.setBackgroundColor((0, 0, 0, 0))
+texteTirFin.setTextVerticalAlignment(1)
+texteTirFin.setFontSize(22)
+
+texteTirReussieFin.setBackgroundColor((0, 0, 0, 0))
+texteTirReussieFin.setTextVerticalAlignment(1)
+texteTirReussieFin.setFontSize(22)
+
+texteTempsFin.setBackgroundColor((0, 0, 0, 0))
+texteTempsFin.setTextVerticalAlignment(1)
+texteTempsFin.setFontSize(22)
 
 #  --------------------------------------------------------------------------
 #      Boucle exécutée tant que MLib ne reçoit pas d'event "pygame.QUIT"
 #  --------------------------------------------------------------------------
 
+#Boucle du programme complet
 while True:
-	# Actualiser les évènements pygame et MLib
-	mapp.frameEvent()
-					
-	# Actualisater l'affichage graphique MLib et afficher de l'image
-	mapp.frameGraphics()
-	pygame.display.update()
+	#  -----------------------------------------------------------------------------------------------------------------------------
+	#      Boucle exécutée tant que MLib ne reçoit pas d'event "pygame.QUIT" ou que l'utilisateur ne quitte pas la page d'accueil
+	#  -----------------------------------------------------------------------------------------------------------------------------
 
+	accueil.setVisible(True)
+	ecranDAccueil = True
+
+	#Affichage de l'écran d'accueil
+	while ecranDAccueil:
+		# Actualiser les évènements pygame et MLib
+		mapp.frameEvent()
+
+		if boutonJouerAccueil.isGettingLeftClicked(): #Lancer le jeu
+			ecranDAccueil = False
+					
+		# Actualisater l'affichage graphique MLib et afficher de l'image
+		mapp.frameGraphics()
+		pygame.display.update()
+
+	accueil.setVisible(False)
+
+	#  -----------------------------------------------------------------------------------------------------------------------------
+	#                              Fin de la première boucle 
+	#  -----------------------------------------------------------------------------------------------------------------------------
+
+	#  -----------------------------------------------------------------------------------------------------------------------------
+	#      Boucle exécutée tant que MLib ne reçoit pas d'event "pygame.QUIT" et que le jeu n'est pas fini
+	#  -----------------------------------------------------------------------------------------------------------------------------
+
+	enJeu = True
+
+	# Chargement du moteur de jeu
+	moteurDeJeu = Game(0, 0, mapp)
+	moteurDeJeu.creerBalle(2)
+
+	mapp.setFocusedWidget(moteurDeJeu)
+
+	#Affichage du jeu
+	while enJeu:
+		# Actualiser les évènements pygame et MLib
+		mapp.frameEvent()
+
+		if moteurDeJeu.tempsDepuisFin() >= 1:
+			enJeu = False
+					
+		# Actualisater l'affichage graphique MLib et afficher de l'image
+		mapp.frameGraphics()
+		pygame.display.update()
+
+	donneesFinDeJeu = moteurDeJeu.donneesFinDeJeu()
+	moteurDeJeu.delete()
+	del moteurDeJeu
+
+	#  -----------------------------------------------------------------------------------------------------------------------------
+	#                              Fin de la deuxième boucle 
+	#  -----------------------------------------------------------------------------------------------------------------------------
+
+	fin.setVisible(True)
+	ecranDeFin = True
+	texteBalleDetruiteFin.setText("Balle(s) détruite(s) : " + str(donneesFinDeJeu["nbBalleDetruite"]))
+	texteTirFin.setText("Tir(s) : " + str(donneesFinDeJeu["nbTir"]))
+	texteTirReussieFin.setText("Tir(s) réussie(s) : " + str(round((donneesFinDeJeu["nbTirReussie"]/donneesFinDeJeu["nbTir"])*100, 2)) + "%")
+	texteTempsFin.setText("Temps : " + str(round(donneesFinDeJeu["temps"], 2)) + " secondes")
+
+	#Affichage de l'écran d'accueil
+	while ecranDeFin:
+		# Actualiser les évènements pygame et MLib
+		mapp.frameEvent()
+
+		if boutonRejouerFin.isGettingLeftClicked(): #Re-aller à la page d'accueil
+			ecranDeFin = False
+
+		if boutonQuitterFin.isGettingLeftClicked(): #Quitter le programme
+			pygame.quit()
+			exit()
+					
+		# Actualisater l'affichage graphique MLib et afficher de l'image
+		mapp.frameGraphics()
+		pygame.display.update()
+
+	fin.setVisible(False)
 
 #  --------------------------------------------------------------------------
 #                              Fin de la boucle 
