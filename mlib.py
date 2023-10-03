@@ -278,9 +278,14 @@ class MWidget:
         if self.getShouldModify(): #If the widget should do the render, do it
             widgetSurface = Surface((self.width, self.height), pygame.SRCALPHA)
 
-            widgetSurface.blit(self._renderBeforeHierarchy(widgetSurface), (0, 0, self.getWidth(), self.getHeight()))
-            widgetSurface.blit(self._renderHierarchy(widgetSurface), (0, 0, self.getWidth(), self.getHeight()))
-            widgetSurface.blit(self._renderAfterHierarchy(widgetSurface), (0, 0, self.getWidth(), self.getHeight()))
+            surfaceToBlit = self._renderBeforeHierarchy(widgetSurface).convert_alpha()
+            widgetSurface.blit(surfaceToBlit, (0, 0, self.getWidth(), self.getHeight()))
+
+            surfaceToBlit = self._renderHierarchy(widgetSurface).convert_alpha()
+            widgetSurface.blit(surfaceToBlit, (0, 0, self.getWidth(), self.getHeight()))
+
+            surfaceToBlit = self._renderAfterHierarchy(widgetSurface).convert_alpha()
+            widgetSurface.blit(surfaceToBlit, (0, 0, self.getWidth(), self.getHeight()))
 
             self._lastSurface = widgetSurface #Store the last generated surface into _lastSurface
 

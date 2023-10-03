@@ -1,7 +1,9 @@
 -Ajout de maxFps dans MApp
 -Ajout de setFocusWidget pour pouvoir focus un widget en particulier
 -Ajout d'un système pour transmettre/ignorer un évènement à un parent
+-Ajout d'une méthode MApp pour avoir la position de la souris
 -Impossibilité de sélectionner des éléments au dessus d'un élément non visible
 -Modification de la façon dont est généré la bordure dans MFrame
 -Modification du générateur dans MText qui prend en charge des fichiers .ttf (SysFont -> Font)
+-Optimisation de _render par l'ajout de .convertAlpha aux surface après rendu (ou pas)
 -Trop d'import implicite dans MLib
