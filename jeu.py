@@ -282,6 +282,9 @@ class Arme:
 	# Retourne texture
 	def getTexture(self): return self.texture
 
+	# Retourne type
+	def getType(self): return self.type
+
 	# Reset l'arme
 	def reset(self):
 		self.chargeurRestant = self.chargeur
@@ -300,7 +303,7 @@ class Arme:
 class Game(MImage):
 
 	# Constructeur du moteur de jeu
-	def __init__(self, x, y, parent, widgetType="MImage"):
+	def __init__(self, typeArme, x, y, parent, widgetType="MImage"):
 		super().__init__('img/fond.jpg', x, y, TAILLE[0], TAILLE[1], parent, widgetType)
 
 		self.armes = {} #Dictionnaire qui contient tous les types d'armes
@@ -308,6 +311,9 @@ class Game(MImage):
 		self.armePosition = (0, 0) #Position de l'arme dans la fenêtre
 		self.creerArme() #Créer tous les objets armes
 		self.croixDeVisee = True #Booléen qui indique si une croix de visée est affichée ou non
+		self.explosion = [] #Liste des propriétés des explosions dans le jeu
+		self.explosionDuree = 0.2 #Durée d'une explosion (en secondes)
+		self.explosionTexture = image.load("img/explosion.png") #Texture d'une explosion
 		self.munitionTirees = [] #Liste des propriétés des munitions tirées
 		self.nbTir = 0 #Nombre de tir total
 		self.nbTirReussie = 0 #Nombre de tir réussie
@@ -371,7 +377,7 @@ class Game(MImage):
 		text.ignoreClick = True
 		self.texteRechargement = text
   
-		self.chargerArme("ar15")
+		self.chargerArme(typeArme)
 
 		self.setBackgroundColor((255, 178, 102))
 
@@ -402,9 +408,11 @@ class Game(MImage):
 	def creerArme(self):
 		ar15 = Arme(6, 30, True, 5, image.load("img/ar15.png").convert_alpha(), "ar15", image.load("img/ar15Munition.png").convert_alpha(), 1500) #Création de l'ar15
 		glock48 = Arme(0, 16, False, 3, image.load("img/glock48.png").convert_alpha(), "glock48", image.load("img/glock48Munition.png").convert_alpha(), 2000) #Création du glock48
+		lanceRoquette = Arme(0, 1, False, 8, image.load("img/lanceRoquette.png"), "lanceRoquette", image.load("img/lanceRoquetteMunition.png"), 200)
 
 		self.armes["ar15"] = ar15
 		self.armes["glock48"] = glock48
+		self.armes["lanceRoquette"] = lanceRoquette
 
 	# Créer nombre balle
 	def creerBalle(self, nombre):
@@ -415,7 +423,7 @@ class Game(MImage):
 			x = random()*(largeur-Balle.BALLE_RAYON)
 			y = random()*(hauteur-Balle.BALLE_RAYON)
 
-			while self.balleALaPosition(x, y, 50) != 0:
+			while self.balleALaPosition(x, y, 50) != 0 and self.getCalculerCollision():
 				x = random()*(largeur-Balle.BALLE_RAYON)
 				y = random()*(hauteur-Balle.BALLE_RAYON)
 
@@ -513,14 +521,27 @@ class Game(MImage):
 				xMunition = self.munitionTirees[j]["pos"][0] + self.armeActuel.getTexture().get_width() / 2
 				yMunition = self.munitionTirees[j]["pos"][1] - (self.armeActuel.getTexture().get_height() / 2 + 10)
 
-				if self.munitionTirees[j]["profondeur"] >= 100: #Si la balle est assez éloignée
+				if self.munitionTirees[j]["profondeur"] >= 100: #Si la munition est assez éloignée
+					#Si la munition touche une balle
 					if distance2D(self.balles[i].getX() + self.balles[i].getRayon(), self.balles[i].getY() + self.balles[i].getRayon(), xMunition, yMunition) <= self.balles[i].getRayon():
-						self.balles.remove(self.balles[i])
+						self.balles.remove(self.balles[i]) #SUpprimer la munition et la balle touchée
 						self.munitionTirees.remove(self.munitionTirees[j])
 						self.nbBalleDetruite += 1
 						self.nbTirReussie += 1
 						i -= 1
 						j -= 1
+						if self.armeActuel.getType() == "lanceRoquette": #Si la munition tirées est une roquette
+							self.explosion.append({"pos": (xMunition, yMunition), "debut": time_ns()})
+							k = 0
+							while k < len(self.balles):
+								#Si la munition est à moins de 150 unités de l'explosion
+								if distance2D(self.balles[k].getX() + self.balles[k].getRayon(), self.balles[k].getY() + self.balles[k].getRayon(), xMunition, yMunition) <= 150:
+									self.balles.remove(self.balles[k]) #Supprimer les balles proches
+									self.nbBalleDetruite += 1
+									if k <= i:
+										i -= 1
+									k -= 1
+								k += 1
 				j += 1
 			i += 1
 			j = 0
@@ -597,6 +618,16 @@ class Game(MImage):
 
 			surface.blit(surfaceABlit, (i.getX(), i.getY(), surfaceABlit.get_width(), surfaceABlit.get_height()))
 
+		#Dessiner les explosions
+		for i in self.explosion:
+			ratio = ((time_ns() - i["debut"])/(10**9)) / (self.explosionDuree)
+			ratioTaille = 200/self.explosionTexture.get_width()
+			surfaceABlit = self.explosionTexture
+			surfaceABlit = transform.scale_by(surfaceABlit, (ratio * ratioTaille, ratio * ratioTaille)) #Calculer la taille de l'explosion
+			surfaceABlit.set_alpha((1 - ratio) * 255)
+
+			surface.blit(surfaceABlit, (i["pos"][0] - surfaceABlit.get_width() / 2, i["pos"][1] - surfaceABlit.get_height() / 2, surfaceABlit.get_width(), surfaceABlit.get_height()))
+
 		#Dessiner les munitions
 		for i in self.munitionTirees:
 			surfaceABlit = self.armeActuel.getMunitionTexture()
@@ -637,6 +668,15 @@ class Game(MImage):
 			if minute != 0: chrono = str(round(minute)) + ":" + str(round(secondes, 1))
 			self.chronometre.setText(chrono)
 
+			i = 0
+			while i < len(self.explosion): #Gérer les explosions
+				e = self.explosion[i]
+				if ((time_ns() - e["debut"])/(10**9)) >= self.explosionDuree: #Si une explosions est fini
+					self.explosion.remove(e) #Supprimer l'explosions
+					del e
+					i -= 1
+				i += 1
+
 			self.framePhysique(deltaTime)
 
 			if self.armeActuel.enChargement(): #Gérer le rechargement de l'arme
@@ -658,18 +698,33 @@ titreAccueil = MText("Jeu", 200, 20, TAILLE[0] - 400, 150, accueil)
 boutonJouerAccueil = MButton("Jouer", 25, TAILLE[1] - 100, 275, 70, accueil)
 boutonCommentJouerAccueil = MButton("Comment jouer", TAILLE[0] - 300, TAILLE[1] - 100, 275, 70, accueil)
 commentJouer = MWidget(0, 0, TAILLE[0], TAILLE[1], accueil)
-imageCommentJouer = MImage("img/commentJouerGameplay.png", 0, 35, commentJouer.getWidth(), commentJouer.getHeight() - 35, commentJouer)
-retourCommentJouer = MButton("Retour", 10, 10, 100, 20, commentJouer)
+imageCommentJouer = MImage("img/commentJouerGameplay.png", 0, 45, commentJouer.getWidth(), commentJouer.getHeight() - 45, commentJouer)
+armeCommentJouer = MButton("Armes", 280, 5, 100, 30, commentJouer)
+gameplayCommentJouer = MButton("Gameplay", 120, 5, 150, 30, commentJouer)
+retourCommentJouer = MButton("Retour", 10, 5, 100, 30, commentJouer)
+
+# Création de la partie graphique de la page d'option de jeu
+optionDeJeu = MWidget(0, 0, TAILLE[0], TAILLE[1], mapp)
+titreOptionDeJeu = MText("Options", 200, 0, TAILLE[0] - 400, 100, optionDeJeu)
+boutonJouerOptionDeJeu = MButton("Jouer", 50, TAILLE[1] - 100, 200, 70, optionDeJeu)
+boutonRetourOptionDeJeu = MButton("Retour", TAILLE[0] - 250, TAILLE[1] - 100, 200, 70, optionDeJeu)
+titreArmeOptionDeJeu = MText("Arme", TAILLE[0] - 250, titreOptionDeJeu.getHeight() + 15, 200, 40, optionDeJeu)
+ar15ArmeOptionDeJeu = MButton("Ar 15", TAILLE[0] - 250, titreArmeOptionDeJeu.getY() + titreArmeOptionDeJeu.getHeight() + 5, 200, 30, optionDeJeu)
+glock48ArmeOptionDeJeu = MButton("Glock 48", TAILLE[0] - 250, ar15ArmeOptionDeJeu.getY() + ar15ArmeOptionDeJeu.getHeight() + 5, 200, 30, optionDeJeu)
+lanceRoquetteArmeOptionDeJeu = MButton("Lance roquette", TAILLE[0] - 250, glock48ArmeOptionDeJeu.getY() + glock48ArmeOptionDeJeu.getHeight() + 5, 200, 30, optionDeJeu)
+titreNombreDeBalleOptionDeJeu = MText("Nombre de balle", 50, titreOptionDeJeu.getHeight() + 15, 200, 40, optionDeJeu)
+texteNombreDeBalleOptionDeJeu = MText("25", 50, titreNombreDeBalleOptionDeJeu.getY() + titreNombreDeBalleOptionDeJeu.getHeight() + 15, 200, 40, optionDeJeu)
+erreurNombreDeBalleOptionDeJeu = MText("Veuillez n'entrer que des nombres.", 50, texteNombreDeBalleOptionDeJeu.getY() + texteNombreDeBalleOptionDeJeu.getHeight(), 200, 60, optionDeJeu)
 
 # Création de la partie graphique de la page de fin
 fin = MWidget(0, 0, TAILLE[0], TAILLE[1], mapp)
 titreFin = MText("Fin du jeu", 100, 20, TAILLE[0] - 200, 100, fin)
 boutonRejouerFin = MButton("Rejouer", 50, TAILLE[1] - 100, 200, 70, fin)
 boutonQuitterFin = MButton("Quitter", TAILLE[0] - 250, TAILLE[1] - 100, 200, 70, fin)
-texteBalleDetruiteFin = MText("Balle(s) détruite(s) : 0", 20, 130, 200, 20, fin)
-texteTirFin = MText("Tir(s) : 0", TAILLE[0] - 220, 130, 200, 20, fin)
-texteTirReussieFin = MText("Tir(s) réussi(s) : 0%", 20, 160, 200, 20, fin)
-texteTempsFin = MText("0.0 s", TAILLE[0] - 220, 160, 200, 20, fin)
+texteBalleDetruiteFin = MText("Balle(s) détruite(s) : 0", 20, 130, 250, 20, fin)
+texteTirFin = MText("Tir(s) : 0", TAILLE[0] - 270, 130, 250, 20, fin)
+texteTirReussieFin = MText("Tir(s) réussi(s) : 0%", 20, 160, 250, 20, fin)
+texteTempsFin = MText("0.0 s", TAILLE[0] - 270, 160, 250, 20, fin)
 
 # Modification des éléments graphiques (voir documentation mlib documentation.html)
 accueil.setBackgroundColor((102, 102, 255))
@@ -688,17 +743,75 @@ boutonJouerAccueil.setChangeFontSizeOnOnOverflight(True)
 boutonJouerAccueil.setCornerRadius(25)
 boutonJouerAccueil.setFontSize(35)
 boutonJouerAccueil.setFontSizeOnOverflight(45)
+
 boutonCommentJouerAccueil.setAntiAnaliasing(True)
 boutonCommentJouerAccueil.setChangeFontSizeOnOnOverflight(True)
 boutonCommentJouerAccueil.setCornerRadius(25)
-boutonCommentJouerAccueil.setFontSize(35)
-boutonCommentJouerAccueil.setFontSizeOnOverflight(45)
+boutonCommentJouerAccueil.setFontSize(30)
+boutonCommentJouerAccueil.setFontSizeOnOverflight(40)
 
 commentJouer.setBackgroundColor((102, 102, 255))
+
+armeCommentJouer.setAntiAnaliasing(True)
+armeCommentJouer.setCornerRadius(15)
+armeCommentJouer.setFontSize(22)
+
+gameplayCommentJouer.setAntiAnaliasing(True)
+gameplayCommentJouer.setCornerRadius(15)
+gameplayCommentJouer.setFontSize(22)
 
 retourCommentJouer.setAntiAnaliasing(True)
 retourCommentJouer.setCornerRadius(15)
 retourCommentJouer.setFontSize(22)
+
+optionDeJeu.setBackgroundColor((102, 102, 255))
+optionDeJeu.setVisible(False)
+
+boutonJouerOptionDeJeu.setAntiAnaliasing(True)
+boutonJouerOptionDeJeu.setChangeFontSizeOnOnOverflight(True)
+boutonJouerOptionDeJeu.setCornerRadius(25)
+boutonJouerOptionDeJeu.setFontSize(35)
+boutonJouerOptionDeJeu.setFontSizeOnOverflight(45)
+
+boutonRetourOptionDeJeu.setAntiAnaliasing(True)
+boutonRetourOptionDeJeu.setChangeFontSizeOnOnOverflight(True)
+boutonRetourOptionDeJeu.setCornerRadius(25)
+boutonRetourOptionDeJeu.setFontSize(35)
+boutonRetourOptionDeJeu.setFontSizeOnOverflight(45)
+
+titreOptionDeJeu.setAntiAnaliasing(True)
+titreOptionDeJeu.setBackgroundColor((255, 255, 255, 0))
+titreOptionDeJeu.setFontSize(75)
+titreOptionDeJeu.setTextHorizontalAlignment(1)
+titreOptionDeJeu.setTextVerticalAlignment(1)
+
+titreArmeOptionDeJeu.setBackgroundColor((255, 255, 255, 0))
+titreArmeOptionDeJeu.setFontSize(22)
+titreArmeOptionDeJeu.setTextHorizontalAlignment(1)
+titreArmeOptionDeJeu.setTextVerticalAlignment(1)
+
+glock48ArmeOptionDeJeu.setFrameColor((255, 0, 0))
+
+titreNombreDeBalleOptionDeJeu.setBackgroundColor((255, 255, 255, 0))
+titreNombreDeBalleOptionDeJeu.setFontSize(22)
+titreNombreDeBalleOptionDeJeu.setTextHorizontalAlignment(1)
+titreNombreDeBalleOptionDeJeu.setTextVerticalAlignment(1)
+
+texteNombreDeBalleOptionDeJeu.setAntiAnaliasing(True)
+texteNombreDeBalleOptionDeJeu.setBackgroundColor((255, 255, 255))
+texteNombreDeBalleOptionDeJeu.setFontSize(22)
+texteNombreDeBalleOptionDeJeu.setFrameWidth(2)
+texteNombreDeBalleOptionDeJeu.setInput(True)
+texteNombreDeBalleOptionDeJeu.setTextHorizontalAlignment(1)
+texteNombreDeBalleOptionDeJeu.setTextVerticalAlignment(1)
+
+erreurNombreDeBalleOptionDeJeu.setBackgroundColor((255, 255, 255, 0))
+erreurNombreDeBalleOptionDeJeu.setDynamicTextCut(True)
+erreurNombreDeBalleOptionDeJeu.setFontSize(22)
+erreurNombreDeBalleOptionDeJeu.setTextColor((255, 0, 0))
+erreurNombreDeBalleOptionDeJeu.setTextHorizontalAlignment(1)
+erreurNombreDeBalleOptionDeJeu.setTextVerticalAlignment(1)
+erreurNombreDeBalleOptionDeJeu.setVisible(False)
 
 fin.setBackgroundColor((102, 102, 255))
 fin.setVisible(False)
@@ -752,6 +865,7 @@ while True:
 	accueil.setVisible(True)
 	commentJouer.setVisible(False)
 	ecranDAccueil = True
+	imageCommentJouer.setImageLink("img/commentJouerGameplay.png")
 
 	#Affichage de l'écran d'accueil
 	while ecranDAccueil:
@@ -761,11 +875,17 @@ while True:
 		if boutonCommentJouerAccueil.isGettingLeftClicked(): #Afficher la page de comment jouer
 			commentJouer.setVisible(True)
 
-		if retourCommentJouer.isGettingLeftClicked(): #Remettre la page d'accueil
-			commentJouer.setVisible(False)
-
 		if boutonJouerAccueil.isGettingLeftClicked(): #Lancer le jeu
 			ecranDAccueil = False
+
+		if armeCommentJouer.isGettingLeftClicked(): #Mettre la section "arme" de la page "comment jouer"
+			imageCommentJouer.setImageLink("img/commentJouerArme.png")
+
+		if gameplayCommentJouer.isGettingLeftClicked(): #Mettre la section "gameplay" de la page "comment jouer"
+			imageCommentJouer.setImageLink("img/commentJouerGameplay.png")
+
+		if retourCommentJouer.isGettingLeftClicked(): #Remettre la page d'accueil
+			commentJouer.setVisible(False)
 					
 		# Actualisater l'affichage graphique MLib et afficher de l'image
 		mapp.frameGraphics()
@@ -778,14 +898,79 @@ while True:
 	#  -----------------------------------------------------------------------------------------------------------------------------
 
 	#  -----------------------------------------------------------------------------------------------------------------------------
+	#      Boucle exécutée tant que MLib ne reçoit pas d'event "pygame.QUIT" ou que l'utilisateur ne quitte pas la page d'options
+	#  -----------------------------------------------------------------------------------------------------------------------------
+
+	optionDeJeu.setVisible(True)
+	ecranOption = True
+	nombreBalle = ""
+	retour = False
+	typeArme = "glock48"
+
+	#Affichage de l'écran d'option
+	while ecranOption:
+		# Actualiser les évènements pygame et MLib
+		mapp.frameEvent()
+
+		nombreBalle = texteNombreDeBalleOptionDeJeu.getText()
+		nombreSeulement = True
+		for i in nombreBalle: #Si seulement des chiffres on été rentrés par l'utilisateur
+			if "0123456789".count(i) <= 0:
+				nombreSeulement = False
+				break
+
+		erreurNombreDeBalleOptionDeJeu.setVisible(not nombreSeulement) #Afficher ou pas une erreur au texte de l'entrée de balle
+
+		if ar15ArmeOptionDeJeu.isGettingLeftClicked(): #Permettre de sélectionner un type d'arme
+			ar15ArmeOptionDeJeu.setFrameColor((255, 0, 0))
+			glock48ArmeOptionDeJeu.setFrameColor((0, 0, 0))
+			lanceRoquetteArmeOptionDeJeu.setFrameColor((0, 0, 0))
+
+			typeArme = "ar15"
+		elif glock48ArmeOptionDeJeu.isGettingLeftClicked():
+			ar15ArmeOptionDeJeu.setFrameColor((0, 0, 0))
+			glock48ArmeOptionDeJeu.setFrameColor((255, 0, 0))
+			lanceRoquetteArmeOptionDeJeu.setFrameColor((0, 0, 0))
+
+			typeArme = "glock48"
+		elif lanceRoquetteArmeOptionDeJeu.isGettingLeftClicked():
+			ar15ArmeOptionDeJeu.setFrameColor((0, 0, 0))
+			glock48ArmeOptionDeJeu.setFrameColor((0, 0, 0))
+			lanceRoquetteArmeOptionDeJeu.setFrameColor((255, 0, 0))
+
+			typeArme = "lanceRoquette"
+
+		if boutonJouerOptionDeJeu.isGettingLeftClicked() and nombreSeulement and nombreBalle != "" and int(nombreBalle) > 0: #Lancer le jeu
+			ecranOption = False
+
+		if boutonRetourOptionDeJeu.isGettingLeftClicked(): #Retourner à l'écran d'accueil
+			ecranOption = False
+			retour = True
+					
+		# Actualisater l'affichage graphique MLib et afficher de l'image
+		mapp.frameGraphics()
+		pygame.display.update()
+
+	optionDeJeu.setVisible(False)
+
+	if retour: continue
+
+	nombreBalle = int(nombreBalle)
+
+	#  -----------------------------------------------------------------------------------------------------------------------------
+	#                              Fin de la première boucle 
+	#  -----------------------------------------------------------------------------------------------------------------------------
+
+	#  -----------------------------------------------------------------------------------------------------------------------------
 	#      Boucle exécutée tant que MLib ne reçoit pas d'event "pygame.QUIT" et que le jeu n'est pas fini
 	#  -----------------------------------------------------------------------------------------------------------------------------
 
 	enJeu = True
 
 	# Chargement du moteur de jeu
-	moteurDeJeu = Game(0, 0, mapp)
-	moteurDeJeu.creerBalle(25)
+	moteurDeJeu = Game(typeArme, 0, 0, mapp)
+	moteurDeJeu.chargerArme(typeArme)
+	moteurDeJeu.creerBalle(nombreBalle)
 
 	mapp.setFocusedWidget(moteurDeJeu)
 
