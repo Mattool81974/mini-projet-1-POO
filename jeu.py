@@ -322,7 +322,7 @@ class Game(MImage):
 		self.balles = [] #Liste qui contient toutes les balles du jeu
 		self.nbBalleDetruite = 0 #Nombre de balles détruites
 
-		self.calculerCollision = False #Booléen qui indique si on calcule les collisions ou non
+		self.calculerCollision = True #Booléen qui indique si on calcule les collisions ou non
 
 		self.fini = False #Booléen qui indique si le jeu est fini
 		self.timecodeDebut = time_ns() #Temps au début du jeu
@@ -461,42 +461,27 @@ class Game(MImage):
 
 			i.move(nouveauX, nouveauY)
 
-			if self.getCalculerCollision(): #Si on calcule les collisions (pas optimal)
+			if self.getCalculerCollision() and len(self.balles) == 2: #Si on calcule les collisions
+				#Données relatives des 2 balles
+				balle1 = self.balles[0]
+				balle2 = self.balles[1]
+				distance = distance2D(balle1.getX(), balle1.getY(), balle2.getX(), balle2.getY())
+				
 				#On calcule les collisions (élastique) avec les autres balles
-				for j in self.balles[index + 1:]:
-					i.verifierCollisions()
-					if i.touche(j) and not i.estEnCollisionAvec(j): #Si il y a collision et qu'elle n'as pas été encore traitée
-						i.rajouterCollision(j) #On signale à la balle qu'une collision est en train d'avoir lieu
-						j.rajouterCollision(i)
+				if balle1.touche(balle2): #Si il y a collision
+					v1 = (balle1.getDX(), balle1.getDY())
+					v2 = (balle2.getDX(), balle2.getDY())
+					n = ((balle1.getX() - balle2.getX()) / distance, (balle1.getY() - balle2.getY()) / distance)
 
-						#Calcul de l'énergie final
-						v = (j.getDX() - i.getDX(), j.getDY() - i.getDY())
+					w1 = (v1[0] - ((v1[0] - v2[0]) * n[0] + (v1[1] - v2[1]) * n[1]) * n[0] , v1[1] - ((v1[0] - v2[0]) * n[0] + (v1[1] - v2[1]) * n[1]) * n[1] )
+					w2 = (v2[0] - ((v2[0] - v1[0]) * n[0] + (v2[1] - v1[1]) * n[1]) * n[0] , v2[1] - ((v2[0] - v1[0]) * n[0] + (v2[1] - v1[1]) * n[1]) * n[1] )
 
-						#Normalisation de v pour que la norme de v soit égal à la somme de celle de dv1 et dv2
-						sommeVAttendu = abs(i.getDX()) + abs(i.getDY()) + abs(j.getDX()) + abs(j.getDY())
-						if abs(v[0]) + abs(v[1]) != sommeVAttendu:
-							ratioManquant = (sommeVAttendu / (abs(v[0]) + abs(v[1])))
-							if abs(v[0]) > abs(v[1]):
-								ratioV = abs(v[1])/abs(v[0])
-								if ratioV == 0: ratioV = 0.0000001
-								v = (v[0] * (ratioManquant * ratioV), v[1] * (ratioManquant * (1 / ratioV)))
-							else:
-								ratioV = abs(v[0])/abs(v[1])
-								if ratioV == 0: ratioV = 0.0000001
-								v = (v[0] * (ratioManquant * (1 / ratioV)), v[1] * (ratioManquant * ratioV))
+					# Mise à jour des vitesses des 2 balles
+					balle1.setDX(w1[0])
+					balle1.setDY(w1[1])
 
-						v1 = (j.getMasse()/(i.getMasse()+j.getMasse())*v[0], j.getMasse()/(i.getMasse()+j.getMasse())*v[1])
-						v2 = ((-j.getMasse())/(i.getMasse()+j.getMasse())*v[0], (-j.getMasse())/(i.getMasse()+j.getMasse())*v[1])
-
-						# Mise à jour des vitesses des 2 balles
-						i.setDX(v1[0])
-						i.setDY(v1[1])
-
-						j.setDX(v2[0])
-						j.setDY(v2[1])
-      
-						nouveauX += i.getDX() * deltaTime
-						nouveauY += i.getDY() * deltaTime
+					balle2.setDX(w2[0])
+					balle2.setDY(w2[1])
 
 			# On prend en compte les rebonds avec le bord
 			if nouveauX < self.rectFenetreDeJeu()[0]:
