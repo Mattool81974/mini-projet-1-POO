@@ -13,49 +13,6 @@ TAILLE = (largeur, hauteur)
 screen = pygame.display.set_mode(TAILLE)
 mapp = MApp(screen, "Jeu", TAILLE[0], TAILLE[1], console=False, printFps=True)
 
-#Permet de normaliser un angle radian ou non
-def normaliserAngle(angle, rad = True):
-	if rad:
-		angle *= 360/(pi*2)
-
-	while angle >= 360: angle -= 360
-	while angle < 0: angle += 360
-
-	if rad:
-		angle /= 360/(pi*2)
-
-	return angle
-
-# Fonction qui retourne l'angle miroir d'un angle sur l'axe x ou y d'un angle radian ou non
-def angleMiroir(angle, axe = "x", rad = True):
-	toReturn = 0
-	if rad:
-		angle *= 360/(pi*2)
-
-	if axe == "x":
-		if angle == 0 or angle == 180:
-			toReturn = angle
-		elif angle < 180:
-			toReturn = 180 + (180 - angle)
-		else:
-			toReturn = 360 - angle
-	elif axe == "y":
-		if angle == 90 or angle == 270:
-			toReturn = angle
-		elif angle < 90:
-			toReturn = 90 + (90 - angle)
-		elif angle > 270:
-			toReturn = 270 - (angle - 270)
-		elif angle < 180:
-			toReturn = 180 - angle
-		else:
-			toReturn = 270 + (270 - angle)
-
-	if rad:
-		toReturn /= 360/(pi*2)
-
-	return toReturn
-
 # Retourne la distance entre 2 points
 def distance2D(x1, y1, x2, y2):
 	return sqrt((x2-x1)**2+(y2-y1)**2)
@@ -67,7 +24,7 @@ class Balle:
 	Z = 100
 
 	# Constructeur d'une balle (qui prend un attribut x et y, mais aussi z pour calculer sa taille en profondeur)
-	def __init__(self, rayon, x, y, parent, widgetType="MImage"):
+	def __init__(self, rayon, x, y):
 
 		#Attributs de géométrie (les coordonnées représentent le centre du cercle)
 		self.rayon = rayon
@@ -75,8 +32,6 @@ class Balle:
 		self.y = 0
 
 		#Attributs de force et de physique
-		self.collisions = []
-		self.dessinerForce = False
 		self.dx = 0
 		self.dy = 0
 		self.masse = 1
@@ -101,10 +56,6 @@ class Balle:
 		self.TEXTUREROUGE = image.load("img/balleRouge.png").convert_alpha() #Texture rouge constante de référence
 		self.textureRouge = image.load("img/balleRouge.png").convert_alpha() #Texture rouge utilisée
 
-	# Retourne si la balle est en collision avec une autre ou non
-	def estEnCollisionAvec(self, balle):
-		return not self.collisions.count(balle) == 0
-
 	# Retourne l'attribut dx
 	def getDX(self):
 		return self.dx
@@ -112,14 +63,6 @@ class Balle:
 	# Retourne l'attribut dy
 	def getDY(self):
 		return self.dy
-	
-	# Retourne la valeur de la force de la balle
-	def getForce(self):
-		return self.force
-	
-	# Retourne la valeur de l'angle (en radian) de la force de la balle sur les axes x et y (pour comprendre comment fonctionne l'angle, voir angle.png)
-	def getForceAngleXY(self):
-		return self.forceAngleXY
 	
 	# Retourne la masse de la particule
 	def getMasse(self):
@@ -154,11 +97,6 @@ class Balle:
 		self.setX(x)
 		self.setY(y)
 
-	# Permet de rajouter une balle avec laquelle celle la rentre en collision
-	def rajouterCollision(self, balle):
-		if self.collisions.count(balle) == 0:
-			self.collisions.append(balle)
-
 	# Permet de redimensionner la texture selon le rayon et l'attribut z du cercle
 	def redimensionnerTexture(self):
 		if (self.getRayon() * 2) / self.TEXTURE.get_width() != 1:
@@ -170,12 +108,6 @@ class Balle:
 		if self.getRouge():
 			self.texture.blit(self.textureRouge, (0, 0, self.textureRouge.get_width(), self.textureRouge.get_height()))
 	
-	# Permettre le dessin d'une flèche indiquant l'angle de la force
-	def setDessinerForce(self, dessinerForce):
-		if self.dessinerForce != dessinerForce:
-			self.dessinerForce = dessinerForce
-			self.setShouldModify(True)
-
 	# Retourne l'attribut dx
 	def setDX(self, dx):
 		self.dx = dx
@@ -210,18 +142,13 @@ class Balle:
 	def touche(self, balle):
 		return distance2D(self.getX(), self.getY(), balle.getX(), balle.getY()) <= self.getRayon() + balle.getRayon()
 	
+	# Vérifie si un cercle rentre en collision avec un point
 	def touchePoint(self, x, y, rayon = 0):
 		return distance2D(self.getX(), self.getY(), x, y) <= self.getRayon() + rayon
 
 	# Retourner le vecteur vitesse de la balle selon la force et son angle
 	def vecteurVitesse(self):
 		return (self.getDX(), self.getDY())
-	
-	# Permet de vérifier si toutes les collisions sont toujours bonnes ou non
-	def verifierCollisions(self):
-		for i in self.collisions:
-			if not self.touche(i):
-				self.collisions.remove(i)
 
 # Création de la classe de l'arme
 class Arme:
@@ -299,7 +226,7 @@ class Arme:
 		return False
 
 # Création de la classe du moteur de jeu
-# La classe héritant de MImage, elle affiche l'image de font
+# La classe héritant de MImage, elle affiche l'image de fond
 class Game(MImage):
 
 	# Constructeur du moteur de jeu
@@ -427,7 +354,7 @@ class Game(MImage):
 				x = random()*(largeur-Balle.BALLE_RAYON)
 				y = random()*(hauteur-Balle.BALLE_RAYON)
 
-			balle = Balle(25, x, y, self)
+			balle = Balle(25, x, y)
 			balle.setDX(fx)
 			balle.setDY(fy)
 			self.balles.append(balle)
@@ -569,9 +496,7 @@ class Game(MImage):
 
 	# Fonction appelé lorsqu'une touche du clavier est pressée
 	def _isKeyGettingPressed(self, key):
-		if key == pygame.K_RIGHT:
-			self.framePhysique(0.01)
-		elif key == pygame.K_r and not self.fini:
+		if key == pygame.K_r and not self.fini:
 			self.armeActuel.debuterChargement()
 			self.texteRechargement.setText("Rechargement\n" + str(round(self.armeActuel.getTempsDeChargement(), 1)))
 			self.texteRechargement.setVisible(True)
